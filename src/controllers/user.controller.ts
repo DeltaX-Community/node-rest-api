@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, } from "tsoa";
 import { User } from "../entities/user";
 import { UserCreationParams } from "../dtos/user.dto";
+import { Paginate } from "../dtos/paginate.dto";
 import { getManager } from "typeorm"
 
 @Route("users")
@@ -27,9 +28,12 @@ export class UsersController extends Controller {
         @Query() perPage: number = 10,
         @Query() beginDate: Date | null = null,
         @Query() endDate: Date | null = null,
-    ): Promise<User[]> {
+    ): Promise<Paginate<User>> {
         const skip = perPage * (page - 1);
-        return getManager().find(User, { take: perPage, skip });
+        const manager = await getManager()
+        const rows = await manager.find(User, { take: perPage, skip });
+        const total = await manager.count(User)
+        return { rows, page, perPage, total } as Paginate<User>
     }
 
     @SuccessResponse("201", "Created")
