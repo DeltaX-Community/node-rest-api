@@ -40,15 +40,13 @@ export class UsersController extends Controller {
     @Get("")
     public async getUsers(
         @Query() page: number = 1,
-        @Query() perPage: number = 10,
-        @Query() beginDate: Date | null = null,
-        @Query() endDate: Date | null = null,
+        @Query() perPage: number = 10
     ): Promise<Paginate<User>> {
         const skip = perPage * (page - 1);
         const manager = await getManager()
         const rows = await manager.find(User, { take: perPage, skip });
         const total = await manager.count(User)
-        return { rows, page, perPage, total } as Paginate<User>
+        return { rows, page, perPage, total }
     }
 
     @SuccessResponse("201", "Created")

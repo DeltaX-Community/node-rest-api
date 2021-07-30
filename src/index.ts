@@ -1,4 +1,4 @@
-import express, { Response as ExResponse, Request as ExRequest, NextFunction } from "express";
+import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "../build/routes";
 import { RegisterErrorMiddleware } from './errors/errorMiddleware';

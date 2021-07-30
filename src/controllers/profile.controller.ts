@@ -31,15 +31,13 @@ export class ProfileController extends Controller {
     @Get("")
     public async getList(
         @Query() page: number = 1,
-        @Query() perPage: number = 10,
-        @Query() beginDate: Date | null = null,
-        @Query() endDate: Date | null = null,
+        @Query() perPage: number = 10
     ): Promise<Paginate<Profile>> {
         const skip = perPage * (page - 1);
         const manager = await getManager()
         const rows = await manager.find(Profile, { take: perPage, skip });
         const total = await manager.count(Profile)
-        return { rows, page, perPage, total } as Paginate<Profile>
+        return { rows, page, perPage, total }
     }
 
     @SuccessResponse("201", "Created")
