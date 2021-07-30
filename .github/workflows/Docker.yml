@@ -14,6 +14,11 @@ jobs:
       contents: read
 
     steps:
+      - name: DELETE Publish Docker
+        run: |
+          echo docker push damiansimanuk/node-rest-api:$(echo ${GITHUB_REF:10})
+
+
       - name: Check out the repo
         uses: actions/checkout@v2
       
@@ -27,11 +32,11 @@ jobs:
         run: |
           npm install
           npm run build 
-          echo docker build -t damiansimanuk/node-rest-api:${{ github.ref }} . 
+          echo docker build -t damiansimanuk/node-rest-api:$(echo ${GITHUB_REF:10}) . 
 
       - name: Publish Docker
         run: |
-          echo docker push damiansimanuk/node-rest-api:${{ github.ref }}
+          echo docker push damiansimanuk/node-rest-api:$(echo ${GITHUB_REF:10})
       
       # - name: Log in to the Container registry
       #   uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
