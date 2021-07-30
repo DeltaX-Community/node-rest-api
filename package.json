@@ -8,7 +8,9 @@
     "build": "tsoa routes && tsc",
     "predev": "tsoa spec-and-routes",
     "route": "tsoa routes",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "dockerbuild": "docker build -t azaracracindar.azurecr.io/agendamiento_backend .",
+    "dockerpush": "docker image push azaracracindar.azurecr.io/agendamiento_backend"
   },
   "repository": {
     "type": "git",

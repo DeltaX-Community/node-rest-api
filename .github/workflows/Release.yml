@@ -21,24 +21,23 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
-      run: |
-        npm install
-        npm run build
+    - name: Build Docker
+      run: | 
+        npm run dockerbuild
 
     - name: Zip the whole thing together
       run: zip -r deploy .
 
-    # - name: Create release draft
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: ${{ github.ref }}
-    #     release_name: Release ${{ github.ref }}
-    #     draft: true
-    #     prerelease: false
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        # draft: true
+        prerelease: false
 
     - name: Upload zip archive as release asset
       id: upload-release-asset
