@@ -4,8 +4,8 @@ WORKDIR /src
 
 COPY *.json ./
 
-RUN npm install
-RUN npm i ts-node typescript
+# RUN npm install
+# RUN npm i ts-node typescript
 
 COPY . .
 

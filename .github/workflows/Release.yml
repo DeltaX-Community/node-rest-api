@@ -21,8 +21,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build Docker
-      run: | 
+    - name: Build
+      run: |
+        npm install 
+        npm run build 
         npm run dockerbuild
 
     - name: Zip the whole thing together
