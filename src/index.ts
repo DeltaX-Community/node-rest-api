@@ -1,6 +1,7 @@
-import express, { Response as ExResponse, Request as ExRequest } from "express";
+import express, { Response as ExResponse, Request as ExRequest, NextFunction } from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "../build/routes";
+import { RegisterErrorMiddleware } from './errors/errorMiddleware';
 import { options } from "./database.confg"
 import { createConnection } from "typeorm"
 
@@ -20,7 +21,7 @@ app.use(
 app.use(express.json());
 app.use(express.static("public"));
 RegisterRoutes(app);
-
+RegisterErrorMiddleware(app);
 
 createConnection(options)
     .then(() => {

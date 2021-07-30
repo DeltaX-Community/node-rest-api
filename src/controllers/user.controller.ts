@@ -1,25 +1,40 @@
 import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, } from "tsoa";
 import { User } from "../entities/user";
-import { UserCreationParams } from "../dtos/user.dto";
+import { Profile } from "../entities/profile";
+import { CreateUserParams, UpdateUserParams } from "../dtos/user.dto";
 import { Paginate } from "../dtos/paginate.dto";
 import { getManager } from "typeorm"
+import { Photo } from "../entities/photo";
 
 @Route("users")
 export class UsersController extends Controller {
 
-    @Get("{userId}")
+    @Get("{id}")
     public async getUser(
-        @Path() userId: number
+        @Path() id: number
     ): Promise<User | any> {
-        return getManager().findOne(User, userId);
+        return getManager().findOne(User, id, { relations: ["profile", "photos"] });
     }
 
-    @Put("{userId}")
+    @Put("{id}")
     public async putUser(
-        @Body() user: User
-    ): Promise<User | void> {
-        var manager = await getManager()
-        return manager.save<User>(user)
+        @Path() id: number,
+        @Body() item: UpdateUserParams
+    ): Promise<User> {
+        return await getManager().transaction(async (trx) => {
+            const user = await trx.findOneOrFail(User, id, { relations: ["profile", "photos"] })
+            if (item.profile) {
+                const profile = trx.create(Profile, item.profile)
+                user.profile = await trx.save(profile)
+            }
+            if (item.addPhotos) {
+                const photos = trx.create(Photo, item.addPhotos)
+                user.photos = [...await trx.save(photos), ...user.photos]
+            }
+            if (item.lastName) user.lastName = item.lastName
+            if (item.firstName) user.firstName = item.firstName
+            return trx.save<User>(user)
+        })
     }
 
     @Get("")
@@ -39,10 +54,15 @@ export class UsersController extends Controller {
     @SuccessResponse("201", "Created")
     @Post()
     public async createUser(
-        @Body() requestBody: UserCreationParams
+        @Body() requestBody: CreateUserParams
     ): Promise<User> {
-        var manager = await getManager()
-        const user = manager.create(User, requestBody)
-        return manager.save<User>(user)
+        return await getManager().transaction(async (trx) => {
+            const user = trx.create(User, requestBody)
+            if (requestBody.profile) {
+                const profile = trx.create(Profile, requestBody.profile)
+                user.profile = await trx.save(profile)
+            }
+            return trx.save<User>(user)
+        })
     }
 }
