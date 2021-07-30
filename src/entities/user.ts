@@ -9,10 +9,10 @@ export class User {
     id!: number;
 
     @Column()
-    firstName!: string;
+    userName!: string;
 
     @Column()
-    lastName!: string;
+    fullName!: string;
 
     @OneToOne(() => Profile)
     @JoinColumn()

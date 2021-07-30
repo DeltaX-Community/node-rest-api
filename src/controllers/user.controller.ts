@@ -31,8 +31,8 @@ export class UsersController extends Controller {
                 const photos = trx.create(Photo, item.addPhotos)
                 user.photos = [...await trx.save(photos), ...user.photos]
             }
-            if (item.lastName) user.lastName = item.lastName
-            if (item.firstName) user.firstName = item.firstName
+            if (item.userName) user.userName = item.userName
+            if (item.fullName) user.fullName = item.fullName
             return trx.save<User>(user)
         })
     }

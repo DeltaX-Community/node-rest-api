@@ -1,6 +1,6 @@
 export interface CreateUserParams {
-    firstName: string;
-    lastName: string;
+    userName: string;
+    fullName: string;
     profile: {
         gender: string;
         photo: string;
@@ -9,8 +9,8 @@ export interface CreateUserParams {
 
 
 export interface UpdateUserParams {
-    firstName?: string;
-    lastName?: string;
+    userName?: string;
+    fullName?: string;
     profile?: {
         gender: string;
         photo: string;

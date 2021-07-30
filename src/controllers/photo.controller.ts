@@ -3,7 +3,7 @@ import { Photo } from "../entities/photo";
 import { User } from "../entities/user";
 import { Paginate } from "../dtos/paginate.dto";
 import { getManager, Equal } from "typeorm"
-import { CreatePhotoParams } from "../dtos/photo.dto";
+import { CreatePhotoParams, UpdatePhotoParams } from "../dtos/photo.dto";
 
 
 @Route("photo")
@@ -16,26 +16,40 @@ export class PhotoController extends Controller {
         return getManager().findOne(Photo, id);
     }
 
-    @Put("{userId}")
+    @Put("{id}")
     public async updateItem(
-        @Body() item: Photo
+        @Path() id: number,
+        @Body() item: UpdatePhotoParams
     ): Promise<Photo | void> {
         var manager = await getManager()
-        return manager.save<Photo>(item)
+        const photo = await manager.findOneOrFail(Photo, id)
+        photo.url = item.url
+        return manager.save<Photo>(photo)
     }
 
     @Get("")
     public async getList(
         @Query() page: number = 1,
         @Query() perPage: number = 10,
-        @Query() beginDate: Date | null = null,
-        @Query() endDate: Date | null = null,
+        @Query() userName: string | null = null
     ): Promise<Paginate<Photo>> {
         const skip = perPage * (page - 1);
         const manager = await getManager()
-        const rows = await manager.find(Photo, { take: perPage, skip });
-        const total = await manager.count(Photo)
-        return { rows, page, perPage, total } as Paginate<Photo>
+
+        var query = manager
+            .createQueryBuilder(Photo, "photo")
+            .innerJoin("photo.user", "user");
+
+        if (userName) {
+            query = query.where("user.userName = :userName", { userName });
+        }
+
+        query.offset(skip)
+        query.limit(perPage)
+
+        const rows = await query.getMany();
+        const total = await query.getCount();
+        return { rows, page, perPage, total }
     }
 
     @SuccessResponse("201", "Created")

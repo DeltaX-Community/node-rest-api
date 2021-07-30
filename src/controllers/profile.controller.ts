@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, } from "tsoa";
 import { Profile } from "../entities/profile";
 import { Paginate } from "../dtos/paginate.dto";
+import { CreateProfileParams } from "../dtos/profile.dto";
 import { getManager } from "typeorm"
 
 
@@ -15,12 +16,16 @@ export class ProfileController extends Controller {
         return getManager().findOne(Profile, id);
     }
 
-    @Put("{userId}")
+    @Put("{id}")
     public async updateItem(
-        @Body() item: Profile
+        @Path() id: number,
+        @Body() item: CreateProfileParams
     ): Promise<Profile | void> {
         var manager = await getManager()
-        return manager.save<Profile>(item)
+        const profile = await manager.findOneOrFail(Profile, id)
+        if (item.gender) profile.gender = item.gender
+        if (item.photo) profile.photo = item.photo
+        return manager.save<Profile>(profile)
     }
 
     @Get("")
@@ -40,7 +45,7 @@ export class ProfileController extends Controller {
     @SuccessResponse("201", "Created")
     @Post()
     public async createItem(
-        @Body() item: Profile
+        @Body() item: CreateProfileParams
     ): Promise<Profile> {
         var manager = await getManager()
         const newItem = manager.create(Profile, item)
