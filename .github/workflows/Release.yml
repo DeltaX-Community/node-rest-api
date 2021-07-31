@@ -24,19 +24,9 @@ jobs:
     - name: Build
       run: |
         npm install 
-        npm run build 
-        docker build -t pepe.io/node-rest-api .
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Zip the whole thing together
-      run: zip -r deploy .
-
-    - name: Create release
+    #    npm run build  
+ 
+    - name: Create Draft release
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -47,13 +37,16 @@ jobs:
         draft: true
         prerelease: false
 
-    - name: Upload zip archive as release asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./deploy.zip
-        asset_name: release_${{ github.ref }}.zip
-        asset_content_type: application/zip
+    # - name: Zip the whole thing together
+    #   run: zip -r deploy .
+
+    # - name: Upload zip archive as release asset
+    #   id: upload-release-asset
+    #   uses: actions/upload-release-asset@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+    #     asset_path: ./deploy.zip
+    #     asset_name: release_${{ github.ref }}.zip
+    #     asset_content_type: application/zip
