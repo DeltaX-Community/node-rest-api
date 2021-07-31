@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "tsoa spec-and-routes",
+    "build": "tsoa spec-and-routes && tsc",
     "start": "nodemon --transpile-only src/index.ts",
     "predev": "tsoa spec-and-routes",
     "dev": "nodemon src/index.ts"
