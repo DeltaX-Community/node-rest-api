@@ -1,12 +1,23 @@
-FROM alpine:3.10
+FROM node:10-alpine
 
-WORKDIR /src
+# update packages
+RUN apk update
 
+# create root application folder
+WORKDIR /app
+
+# copy configs to /app folder
 COPY *.json ./
 
-# RUN npm install
-# RUN npm i ts-node typescript
+# copy source code to /app/src folder
+COPY src /app/src
 
-COPY . .
+# check files list
+RUN ls -a
 
-CMD ["npm", "start"]
+RUN npm install
+RUN npm run build
+
+EXPOSE 7777
+
+CMD [ "npm", "start" ]
