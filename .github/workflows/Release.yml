@@ -26,16 +26,16 @@ jobs:
         npm install 
         npm run build  
  
-    - name: Create Draft release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: true
-        prerelease: false
+    # - name: Create Draft release
+    #   id: create_release
+    #   uses: actions/create-release@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     tag_name: ${{ github.ref }}
+    #     release_name: Release ${{ github.ref }}
+    #     draft: true
+    #     prerelease: false
 
     # - name: Zip the whole thing together
     #   run: zip -r deploy .
@@ -50,3 +50,30 @@ jobs:
     #     asset_path: ./deploy.zip
     #     asset_name: release_${{ github.ref }}.zip
     #     asset_content_type: application/zip
+
+
+    - name: Replace credentials
+      run: |
+        find . -name "*" -exec sed -i "s/__VERSION__ /$(echo ${GITHUB_REF:10})/g" {}  version.json
+ 
+    - name: Create Draft release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }} prueba version json
+        draft: true
+        prerelease: false
+
+    - name: Upload zip archive as release asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./version.json
+        asset_name: release_${{ github.ref }}.json
+        asset_content_type: application/json

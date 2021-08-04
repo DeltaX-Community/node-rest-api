@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, } from "tsoa";
+import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Tags } from "tsoa";
 import { Photo } from "../entities/photo";
 import { User } from "../entities/user";
 import { Paginate } from "../dtos/paginate.dto";
@@ -6,7 +6,8 @@ import { getManager, Equal } from "typeorm"
 import { CreatePhotoParams, UpdatePhotoParams } from "../dtos/photo.dto";
 
 
-@Route("photo")
+@Route("user/photo")
+@Tags("User")
 export class PhotoController extends Controller {
 
     @Get("{id}")

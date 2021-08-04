@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, } from "tsoa";
+import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Security, Tags } from "tsoa";
 import { User } from "../entities/user";
 import { Profile } from "../entities/profile";
 import { CreateUserParams, UpdateUserParams } from "../dtos/user.dto";
@@ -7,9 +7,11 @@ import { getManager } from "typeorm"
 import { Photo } from "../entities/photo";
 
 @Route("users")
+@Tags("User")
 export class UsersController extends Controller {
 
     @Get("{id}")
+    @Security("api_key", ["admin"])
     public async getUser(
         @Path() id: number
     ): Promise<User | any> {
@@ -38,6 +40,8 @@ export class UsersController extends Controller {
     }
 
     @Get("")
+    @Security("api_key", ["admin"])
+    @Security("basic_auth", ["admin"])
     public async getUsers(
         @Query() page: number = 1,
         @Query() perPage: number = 10
