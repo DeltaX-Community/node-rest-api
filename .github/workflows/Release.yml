@@ -54,7 +54,7 @@ jobs:
 
     - name: Replace credentials
       run: |
-        find . -name "*" -exec sed -i "s/__VERSION__ /$(echo ${GITHUB_REF:10})/g" {}  version.json
+        sed -i "s/__VERSION__ /$(echo ${GITHUB_REF:10})/g" {}  version.json 
  
     - name: Create Draft release
       id: create_release
