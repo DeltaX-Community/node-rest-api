@@ -4,9 +4,20 @@
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
     "outputDirectory": "public",
-    "specVersion": 3
+    "specVersion": 2, 
+    "securityDefinitions": {
+        "basic_auth": {
+            "type": "basic"
+        },
+        "api_key": {
+            "type": "apiKey", 
+            "name": "x-api-key", 
+            "in": "header"
+        }
+    }
   },
   "routes": {
+    "authenticationModule": "./src/auth/authentication.ts",
     "routesDir": "build"
   },
   "ignore": ["**/node_modules/**"]

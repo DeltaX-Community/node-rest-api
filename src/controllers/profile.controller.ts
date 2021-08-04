@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, } from "tsoa";
+import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Tags } from "tsoa";
 import { Profile } from "../entities/profile";
 import { Paginate } from "../dtos/paginate.dto";
 import { CreateProfileParams } from "../dtos/profile.dto";
@@ -6,7 +6,8 @@ import { getManager } from "typeorm"
 
 
 
-@Route("profile")
+@Route("user/profile")
+@Tags("User")
 export class ProfileController extends Controller {
 
     @Get("{id}")

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany, Index } from "typeorm";
 import { Profile } from "./profile";
 import { Photo } from "./photo";
 
@@ -9,10 +9,14 @@ export class User {
     id!: number;
 
     @Column()
+    @Index({ unique: true })
     userName!: string;
 
     @Column()
     fullName!: string;
+
+    @Column({ select: false, nullable: true })
+    password!: string;
 
     @OneToOne(() => Profile)
     @JoinColumn()
