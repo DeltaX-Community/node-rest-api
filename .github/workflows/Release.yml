@@ -53,16 +53,17 @@ jobs:
 
     - name: Generate Version
       run: |-
-        cat <<EOF > version.json
+        cat <<EOF > versionX.json
         {
-          "pepe":"genero ok o no?",
+          "pepe":"genero versionX ok o no?",
           "version" : "$(echo ${GITHUB_REF:10})",  
           "tag": "$(git describe --tags)",
           "revision" : "$(git rev-list HEAD --count)",  
           "date" : "$(date --iso-8601=seconds)",
           "git_revision" : "$(git rev-parse --short HEAD)"
-        }   
-        EOF  
+        } 
+      run: |
+        cp versionX.json version.json
  
     - name: Create Draft release
       id: create_release
