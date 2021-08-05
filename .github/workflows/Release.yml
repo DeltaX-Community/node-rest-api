@@ -62,7 +62,7 @@ jobs:
           "date" : "$(date --iso-8601=seconds)",
           "git_revision" : "$(git rev-parse --short HEAD)"
         }   
-        EOF 
+        EOF  
  
     - name: Create Draft release
       id: create_release
