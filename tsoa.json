@@ -4,7 +4,7 @@
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
     "outputDirectory": "public",
-    "specVersion": 2, 
+    "specVersion": 3, 
     "securityDefinitions": {
         "basic_auth": {
             "type": "basic"
