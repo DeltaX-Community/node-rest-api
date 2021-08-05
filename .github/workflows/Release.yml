@@ -56,8 +56,8 @@ jobs:
       run: |
         cp version.tpl.json version.json
         sed -i "s/__VERSION__/$(echo ${GITHUB_REF:10})/g" version.json 
-        sed -i "s/__GIT_DESCRIBE__/$(git describe HEAD)/g" version.json 
-        sed -i "s/__REVISION_COUNT__/$(git rev-list HEAD --all --count HEAD)/g" version.json 
+        sed -i "s/__GIT_DESCRIBE__/$(git describe --tags)/g" version.json 
+        sed -i "s/__REVISION_COUNT__/$(git rev-list --tags --all --count)/g" version.json 
         sed -i "s/__DATE__/$(date --iso-8601=seconds)/g" version.json
         sed -i "s/__GIT_REV__/$(git rev-parse --short HEAD)/g" version.json
  
