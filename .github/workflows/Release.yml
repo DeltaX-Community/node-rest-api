@@ -52,10 +52,10 @@ jobs:
     #     asset_content_type: application/zip
 
     - name: Generate Version
-      run: |
+      run: |-
         cat <<EOF > version.json
         {
-          "pepe":"genero ok?"
+          "pepe":"genero ok o no?",
           "version" : "$(echo ${GITHUB_REF:10})",  
           "tag": "$(git describe --tags)",
           "revision" : "$(git rev-list HEAD --count)",  
