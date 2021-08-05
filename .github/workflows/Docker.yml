@@ -41,6 +41,8 @@ jobs:
 
       - name: Build
         run: | 
+          npm i 
+          npm run build 
           docker build -t damiansimanuk/node-rest-api:$(echo ${GITHUB_REF:10}) . 
 
       - name: Publish Docker
