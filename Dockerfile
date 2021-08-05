@@ -1,23 +1,9 @@
-FROM node:10-alpine
+FROM node:14-alpine
 
-# update packages
-RUN apk update
-
-# create root application folder
-WORKDIR /app
-
-# copy configs to /app folder
-COPY *.json ./
-
-# copy source code to /app/src folder
-COPY src /app/src
-
-# check files list
-RUN ls -a
-
-RUN npm install
+COPY . . 
+ 
+RUN npm ci --production
+RUN npm i -g ts-node
 RUN npm run build
-
-EXPOSE 7777
 
 CMD [ "npm", "start" ]

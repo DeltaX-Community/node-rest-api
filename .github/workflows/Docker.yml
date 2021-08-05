@@ -18,7 +18,6 @@ jobs:
         run: |
           echo docker push damiansimanuk/node-rest-api:$(echo ${GITHUB_REF:10})
 
-
       - name: Check out the repo
         uses: actions/checkout@v2
       
@@ -27,10 +26,21 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Generate Version
+        run: |-
+          cat <<EOF > version.json
+          {
+            "pepe":"genero versionX ok o no?",
+            "version" : "$(echo ${GITHUB_REF:10})",  
+            "tag": "$(git describe --tags)",
+            "revision" : "$(git rev-list HEAD --count)",  
+            "date" : "$(date --iso-8601=seconds)",
+            "git_revision" : "$(git rev-parse --short HEAD)"
+          }  
 
       - name: Build
-        run: |
-          npm install 
+        run: | 
           docker build -t damiansimanuk/node-rest-api:$(echo ${GITHUB_REF:10}) . 
 
       - name: Publish Docker
