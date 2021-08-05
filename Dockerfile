@@ -1,8 +1,12 @@
 FROM node:14-alpine
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY . /app
+COPY build/routes.ts build/
+COPY public public
+COPY src src
+COPY *.json ./
+
  
 RUN npm ci --production
 RUN npm i ts-node
