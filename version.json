@@ -1,3 +1,7 @@
 {
-    "version": "__VERSION__"
+    "version" : "",  
+    "tag": "v0.0.21",
+    "revision" : "30",  
+    "date" : "2021-08-04T21:41:15-03:00",
+    "git_revision" : "513d1f5"
 }

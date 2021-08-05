@@ -1,0 +1,7 @@
+{
+    "version" : "__VERSION__",  
+    "tag": "__GIT_DESCRIBE__",
+    "revision" : "__REVISION_COUNT__",  
+    "date" : "__DATE__",
+    "git_revision" : "__GIT_REV__"
+}

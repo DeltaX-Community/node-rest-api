@@ -5,6 +5,10 @@ import { RegisterErrorMiddleware } from './errors/errorMiddleware';
 import { options } from "./database.confg"
 import { createConnection } from "typeorm"
 import authRoute from "./auth/authRoute"
+import version from "../version.json"
+// const version = require("../version.json")
+
+
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -18,6 +22,10 @@ app.use(
         },
     })
 );
+
+app.get("/version", (req, resp) => {
+    resp.json(version)
+})
 
 app.use(express.json());
 app.use(express.static("public"));
