@@ -62,6 +62,8 @@ jobs:
           "date" : "$(date --iso-8601=seconds)",
           "git_revision" : "$(git rev-parse --short HEAD)"
         } 
+
+    - name: Copy Version
       run: |
         cp versionX.json version.json
  
