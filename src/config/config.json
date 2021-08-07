@@ -1,0 +1,5 @@
+
+{
+    "accessTokenSecret" : "somerandomaccesstoken",
+    "refreshTokenSecret": "somerandomstringforrefreshtoken"
+}

@@ -1,18 +1,19 @@
 {
   "entryFile": "src/index.ts",
-   "controllerPathGlobs": ["src/controllers/*.controller.ts"],
+   "controllerPathGlobs": ["src/controllers/*/*.controller.ts"],
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
-    "outputDirectory": "public",
+    "outputDirectory": "build",
     "specVersion": 3, 
     "securityDefinitions": {
-        "basic_auth": {
-            "type": "basic"
-        },
-        "api_key": {
-            "type": "apiKey", 
-            "name": "x-api-key", 
-            "in": "header"
+        "basic": {
+          "type": "basic",
+           "name": "Basic Authentication"
+        }, 
+        "jwt": {
+          "type": "http", 
+          "scheme":"bearer",
+          "name": "Bearer Authentication"
         }
     }
   },

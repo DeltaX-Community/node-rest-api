@@ -1,14 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Index, Column, CreateDateColumn } from "typeorm";
 
-@Entity()
+@Entity({ name: "profiles" })
 export class Profile {
 
     @PrimaryGeneratedColumn()
     id!: number;
 
     @Column()
-    gender!: string;
+    @Index({ unique: true })
+    name!: string;
 
     @Column()
-    photo!: string;
+    description!: string;
+
+    @CreateDateColumn()
+    createAt!: Date;
+
+    @Column({ default: true })
+    isActive!: boolean;
 }

@@ -24,8 +24,8 @@ export function nameField<TT extends keyof ITables, TV extends ITables[TT]>(tabl
 console.log("photo.id            => ", nameof<ITables>(t => t.photo.id))
 console.log("photo.id            => ", nameTable(t => t.photo.id))
 console.log("photo.user.fullName => ", nameTable(t => t.photo.user.fullName))
-console.log("photo               => ", nameof<Profile>(t => t.photo))
-console.log("gender              => ", nameField("profile", p => p.gender))
+console.log("description         => ", nameof<Profile>(t => t.description))
+console.log("createAt            => ", nameField("profile", p => p.createAt))
 
 
 interface Person {

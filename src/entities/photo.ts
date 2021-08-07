@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
 import { User } from "./user";
 
-@Entity()
+@Entity({ name: "photos" })
 export class Photo {
 
     @PrimaryGeneratedColumn()
@@ -13,4 +13,9 @@ export class Photo {
     @Column()
     url!: string;
 
+    @CreateDateColumn()
+    createAt!: Date;
+
+    @Column({ default: true })
+    isActive!: boolean;
 }

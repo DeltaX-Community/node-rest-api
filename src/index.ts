@@ -1,35 +1,25 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "../build/routes";
 import { RegisterErrorMiddleware } from './errors/errorMiddleware';
-import { options } from "./database.confg"
+import { options } from "./config/database.confg"
 import { createConnection } from "typeorm"
-import authRoute from "./auth/authRoute"
 import version from "../version.json"
-// const version = require("../version.json")
-
-
 
 const port = process.env.PORT || 3000;
 const app = express();
 
-app.use(
-    "/docs",
-    swaggerUi.serve,
-    swaggerUi.setup(undefined, {
-        swaggerOptions: {
-            url: "/swagger.json",
-        },
-    })
-);
-
-app.get("/version", (req, resp) => {
-    resp.json(version)
-})
-
 app.use(express.json());
 app.use(express.static("public"));
-app.use(authRoute);
+
+app.use("/docs", swaggerUi.serve, async (_req: Request, res: Response) => {
+    return res.send(
+        swaggerUi.generateHTML(await import("../build/swagger.json"))
+    );
+});
+
+app.get("/version", (_req, resp) => { resp.json(version) })
+
 RegisterRoutes(app);
 RegisterErrorMiddleware(app);
 

@@ -1,19 +1,13 @@
 export interface CreateUserParams {
-    userName: string;
+    username: string;
     fullName: string;
-    profile: {
-        gender: string;
-        photo: string;
-    }
+    email?: string;
 }
 
-
 export interface UpdateUserParams {
-    userName?: string;
     fullName?: string;
-    profile?: {
-        gender: string;
-        photo: string;
-    },
-    addPhotos?: { url: string; }[]
+    email?: string;
+    password?: string;
+    groups?: { name: string; }[];
+    photos?: { url: string; }[];
 }
