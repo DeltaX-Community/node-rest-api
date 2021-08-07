@@ -1,5 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { ValidateError } from '@tsoa/runtime';
+import { MessageError } from './MessageError';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 export function RegisterErrorMiddleware(app: Router) {
 
@@ -16,10 +18,17 @@ export function RegisterErrorMiddleware(app: Router) {
                 details: err?.fields,
             });
         }
+        if (err instanceof MessageError) {
+            return res.status(err.status || 500).json(err);
+        }
+        if (err instanceof JsonWebTokenError) {
+            return res.status((err as any)?.status || 500).json(err);
+        }
         if (err instanceof Error) {
-            return res.status(500).json({
+            const st = (err as any)?.status;
+            return res.status(st >= 400 ? st : 500).json({
                 message: "Internal Server Error",
-                error: err
+                error: `${err}`
             });
         }
         next();

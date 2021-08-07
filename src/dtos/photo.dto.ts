@@ -1,5 +1,5 @@
 export interface CreatePhotoParams {
-    userName: string;
+    username: string;
     url: string;
 }
 

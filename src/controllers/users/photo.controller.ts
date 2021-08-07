@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Tags } from "tsoa";
-import { Photo } from "../entities/photo";
-import { User } from "../entities/user";
-import { Paginate } from "../dtos/paginate.dto";
+import { Photo } from "../../entities/photo";
+import { User } from "../../entities/user";
+import { Paginate } from "../../dtos/paginate.dto";
 import { getManager, Equal } from "typeorm"
-import { CreatePhotoParams, UpdatePhotoParams } from "../dtos/photo.dto";
+import { CreatePhotoParams, UpdatePhotoParams } from "../../dtos/photo.dto";
 
 
-@Route("user/photo")
-@Tags("User")
+@Route("users/photos")
+@Tags("Users")
 export class PhotoController extends Controller {
 
     @Get("{id}")
@@ -32,7 +32,7 @@ export class PhotoController extends Controller {
     public async getList(
         @Query() page: number = 1,
         @Query() perPage: number = 10,
-        @Query() userName: string | null = null
+        @Query() username: string | null = null
     ): Promise<Paginate<Photo>> {
         const skip = perPage * (page - 1);
         const manager = await getManager()
@@ -41,8 +41,8 @@ export class PhotoController extends Controller {
             .createQueryBuilder(Photo, "photo")
             .innerJoin("photo.user", "user");
 
-        if (userName) {
-            query = query.where("user.userName = :userName", { userName });
+        if (username) {
+            query = query.where("user.username = :username", { username });
         }
 
         query.offset(skip)
@@ -60,7 +60,7 @@ export class PhotoController extends Controller {
     ): Promise<Photo> {
         var manager = await getManager()
         const newItem = manager.create(Photo, item)
-        newItem.user = await manager.findOneOrFail(User, { where: { lastName: Equal(item.userName) } })
+        newItem.user = await manager.findOneOrFail(User, { where: { "username": Equal(item.username) } })
         return manager.save<Photo>(newItem)
     }
 }
