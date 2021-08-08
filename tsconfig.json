@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2017",
+    "sourceMap": false,
     "module": "commonjs",
-    "outDir": "./build",
+    "outDir": "build",
     "strict": true,
     "moduleResolution":"Node", 
     "esModuleInterop": true,
@@ -12,8 +13,16 @@
     "baseUrl": "./",
     "paths": {
       "test/*": ["test/*"]
-    }
+    }, 
+    "noImplicitAny": false,
+    "strictPropertyInitialization": false,  
+    "rootDir": "src",
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+
   },
-  "include": [ "src/**/*"],
+  "include": [ "src/**/*.ts"],
   "exclude" : ["src/**/*.test.ts"]
 }

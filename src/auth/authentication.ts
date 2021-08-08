@@ -2,7 +2,7 @@ import * as express from "express";
 import * as jwt from "jsonwebtoken";
 import { getUser, IAuthData } from "./auth.service";
 import { ForbiddenError, UnauthorizedError } from "../errors/MessageError";
-import config from "../config/config.json"
+import { config, development as DEV } from "../config"
 
 
 /**
@@ -54,10 +54,8 @@ export async function expressAuthentication(
     let token: string;
     const authorization = request.headers['authorization']
 
-    console.log(request.headers)
-
     if (authorization && authorization.startsWith("Basic")) {
-        console.log("Check Basic authorization")
+        if (DEV) console.log("Check Basic authorization")
         const userPassStr = Buffer.from(authorization.split(" ")[1], 'base64').toString();
         const userPass = userPassStr.split(":");
         const username = userPass[0]
@@ -69,11 +67,11 @@ export async function expressAuthentication(
     }
 
     if (authorization && authorization.startsWith("Bearer")) {
-        console.log("Check Bearer authorization")
+        if (DEV) console.log("Check Bearer authorization")
         token = authorization.split(" ")[1];
     }
     else {
-        console.log("Check x-access-token authorization")
+        if (DEV) console.log("Check x-access-token authorization")
         token = request.body.token || request.headers["x-access-token"];
     }
 

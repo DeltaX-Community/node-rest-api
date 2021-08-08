@@ -6,8 +6,8 @@
     {
         "type": "sqlite",
         "database": "data/db-v2.sqlite",
-        "entities": ["build/entities/**.js"],
-        "logging": false,
+        "entities": ["src/entities/**.ts"],
+        "logging": true,
         "synchronize": false
     }
 }

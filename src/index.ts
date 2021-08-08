@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
-import { RegisterRoutes } from "../build/routes";
+import { RegisterRoutes } from "./generated/routes";
 import { RegisterErrorMiddleware } from './errors/errorMiddleware';
-import { options } from "./config/database.confg"
+import { connectionConfig } from "./config"
 import { createConnection } from "typeorm"
-import version from "../version.json"
+import version from "./generated/version.json"
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -14,7 +14,7 @@ app.use(express.static("public"));
 
 app.use("/docs", swaggerUi.serve, async (_req: Request, res: Response) => {
     return res.send(
-        swaggerUi.generateHTML(await import("../build/swagger.json"))
+        swaggerUi.generateHTML(await import("./generated/swagger.json"))
     );
 });
 
@@ -23,7 +23,7 @@ app.get("/version", (_req, resp) => { resp.json(version) })
 RegisterRoutes(app);
 RegisterErrorMiddleware(app);
 
-createConnection(options)
+createConnection(connectionConfig)
     .then(() => {
         app.listen(port, () =>
             console.log(`App listening at http://localhost:${port}/docs`)

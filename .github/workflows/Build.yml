@@ -12,10 +12,22 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [14.x]
     
     steps:
     - uses: actions/checkout@v2
+
+    - name: Generate Version
+      run: |-
+        cat <<EOF > src/generated/version.json
+        {
+          "pepe":"genero versionX ok o no?",
+          "version" : "$(echo ${GITHUB_REF:10})",  
+          "tag": "$(git describe --tags)",
+          "revision" : "$(git rev-list HEAD --count)",  
+          "date" : "$(date --iso-8601=seconds)",
+          "git_revision" : "$(git rev-parse --short HEAD)"
+        } 
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1

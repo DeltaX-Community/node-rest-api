@@ -3,7 +3,7 @@
    "controllerPathGlobs": ["src/controllers/*/*.controller.ts"],
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
-    "outputDirectory": "build",
+    "outputDirectory": "src/generated",
     "specVersion": 3, 
     "securityDefinitions": {
         "basic": {
@@ -19,7 +19,7 @@
   },
   "routes": {
     "authenticationModule": "./src/auth/authentication.ts",
-    "routesDir": "build"
+    "routesDir": "src/generated"
   },
   "ignore": ["**/node_modules/**"]
 }

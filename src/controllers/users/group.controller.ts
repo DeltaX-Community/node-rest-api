@@ -48,7 +48,7 @@ export class RoleController extends Controller {
     ): Promise<Paginate<Group>> {
         const skip = perPage * (page - 1);
         const manager = await getManager()
-        const relations = [];
+        const relations: string[] = [];
         if (includeUsers) relations.push("users")
         if (includePermissions) relations.push("permissions")
         const rows = await manager.find(Group, { take: perPage, skip, relations });

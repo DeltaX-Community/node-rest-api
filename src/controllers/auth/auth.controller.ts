@@ -4,7 +4,7 @@ import { Equal, getManager, In } from "typeorm"
 import * as jwt from "jsonwebtoken";
 import { getUser, getUserById } from "../../auth/auth.service";
 import { ForbiddenError, UnauthorizedError } from "../../errors/MessageError";
-import { accessTokenSecret, refreshTokenSecret } from "../../config/config.json"
+import { config } from "../../config"
 
 
 let refreshTokens: string[] = []
@@ -34,11 +34,11 @@ export class AuthController extends Controller {
         const user = await getUser(username, password);
 
         // generate an access token
-        const accessToken = jwt.sign(user, accessTokenSecret, { expiresIn: '20m' });
+        const accessToken = jwt.sign(user, config.accessTokenSecret, { expiresIn: '20m' });
 
         const refreshToken = jwt.sign({
             id: user.id
-        }, refreshTokenSecret);
+        }, config.refreshTokenSecret);
 
         refreshTokens.push(refreshToken);
 
@@ -86,13 +86,13 @@ export class AuthController extends Controller {
             throw new ForbiddenError("Invalid Token!");
         }
 
-        const decoded = jwt.verify(refreshToken.token, refreshTokenSecret, { complete: true }) as { payload: any };
+        const decoded = jwt.verify(refreshToken.token, config.refreshTokenSecret, { complete: true }) as { payload: any };
         const userId = decoded.payload.id as number;
 
         const user = await getUserById(userId);
 
         // generate an access token
-        const accessToken = jwt.sign(user, accessTokenSecret, { expiresIn: '20m' });
+        const accessToken = jwt.sign(user, config.accessTokenSecret, { expiresIn: '20m' });
 
         return { accessToken };
     }

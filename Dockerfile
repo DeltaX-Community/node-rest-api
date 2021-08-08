@@ -1,14 +1,11 @@
 FROM node:14-alpine
 
-# WORKDIR /app
+WORKDIR /app
 
-COPY build/routes.ts build/ 
-COPY build/swagger.json build/ 
-COPY src src
-COPY *.json ./
+COPY build /app/build
+COPY *.json /app/
  
 RUN npm ci --production
 RUN npm i ts-node
-# RUN npm run build
 
 CMD [ "npm", "start" ]

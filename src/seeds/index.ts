@@ -1,12 +1,17 @@
 
-import { options } from "../config/database.confg"
+import { connectionConfig } from "../config"
 import { createConnection, getManager } from "typeorm"
 import { initPermissions } from "./permissions.seed"
 import { initGroups } from "./groups.seed"
 import { initUsers } from "./users.seed"
 
+const databaseOptions = {
+    logging: true,
+    synchronize: true
+}
+
 console.log('*** Initialize Database Schema ***')
-createConnection({ ...options, synchronize: true })
+createConnection({ ...connectionConfig, ...databaseOptions })
     .then(() =>
         getManager().transaction(async (tran) => {
 

@@ -29,7 +29,7 @@ jobs:
           
       - name: Generate Version
         run: |-
-          cat <<EOF > version.json
+          cat <<EOF > src/generated/version.json
           {
             "pepe":"genero versionX ok o no?",
             "version" : "$(echo ${GITHUB_REF:10})",  
