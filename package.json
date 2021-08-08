@@ -12,7 +12,7 @@
     "dev": "nodemon src/index.ts",
     "tsoa": "tsoa spec-and-routes",
     "seed": "ts-node src/seeds/index.ts",
-    "seed:start": "npm run seed && npm run start:prod"
+    "seed:start": "node build/seeds/index.js && node build/index.js"
   },
   "repository": {
     "type": "git",

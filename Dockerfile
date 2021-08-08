@@ -8,4 +8,8 @@ COPY *.json /app/
 RUN npm ci --production
 RUN npm i ts-node
 
-CMD [ "npm", "start" ]
+ENV NODE_ENV production
+ENV PORT 3002
+EXPOSE ${PORT}
+
+CMD [ "npm", "run", "seed:start" ]
