@@ -3,16 +3,16 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AuthController } from './../controllers/auth/auth.controller';
+import { AuthController } from './../app/controllers/auth/auth.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { RoleController } from './../controllers/users/group.controller';
+import { RoleController } from './../app/controllers/users/group.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { PermissionController } from './../controllers/users/permission.controller';
+import { PermissionController } from './../app/controllers/users/permission.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { PhotoController } from './../controllers/users/photo.controller';
+import { PhotoController } from './../app/controllers/users/photo.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { UsersController } from './../controllers/users/user.controller';
-import { expressAuthentication } from './../auth/authentication';
+import { UsersController } from './../app/controllers/users/user.controller';
+import { expressAuthentication } from './../app/auth/authentication';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
 import * as express from 'express';

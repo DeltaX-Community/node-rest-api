@@ -5,14 +5,17 @@
   "main": "index.js",
   "scripts": {
     "build": "tsoa spec-and-routes && tsc --build",
-    "start": "node ./build/index.js",
-    "start:prod": "set NODE_ENV=production&& node ./build/index.js",
+    "start": "node build/index.js",
+    "start:prod": "set NODE_ENV=production&& node build/index.js",
     "startts": "ts-node --transpile-only src/index.ts",
     "predev": "tsoa spec-and-routes && tsc --build",
     "dev": "nodemon src/index.ts",
     "tsoa": "tsoa spec-and-routes",
-    "seed": "ts-node src/seeds/index.ts",
-    "seed:start": "node build/seeds/index.js && node build/index.js"
+    "seed": "node build/seeds/index.js",
+    "seed:start": "node build/seeds/index.js && node build/index.js",
+    "build:e2e": "tsc -p tsconfig.e2e.json",
+    "start:e2e": "mocha --timeout 4000 --file build/e2e.js \"build/e2e/**/*.js\"",
+    "e2e": "npm run build:e2e && npm run start:e2e"
   },
   "repository": {
     "type": "git",
@@ -38,12 +41,19 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/chai": "^4.2.21",
     "@types/jsonwebtoken": "^8.5.4",
+    "@types/mocha": "^7.0.2",
     "@types/node": "^16.4.13",
+    "@types/supertest": "^2.0.11",
     "@types/swagger-ui-express": "^4.1.3",
+    "chai": "^4.3.4",
     "concurrently": "^6.2.0",
+    "mocha": "^8.2.1",
     "nodemon": "^2.0.12",
     "openapi-typescript": "^4.0.2",
+    "source-map-support": "^0.5.19",
+    "supertest": "^6.1.4",
     "typescript": "^4.3.5"
   }
 }

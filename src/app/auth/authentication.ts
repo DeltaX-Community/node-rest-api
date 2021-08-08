@@ -2,7 +2,7 @@ import * as express from "express";
 import * as jwt from "jsonwebtoken";
 import { getUser, IAuthData } from "./auth.service";
 import { ForbiddenError, UnauthorizedError } from "../errors/MessageError";
-import { config, development as DEV } from "../config"
+import { config, development as DEV } from "../../config"
 
 
 /**

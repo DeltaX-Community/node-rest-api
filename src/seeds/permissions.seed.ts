@@ -1,5 +1,5 @@
 import { EntityManager, Equal } from "typeorm";
-import { Permission } from "../entities/permission"
+import { Permission } from "../app/entities/permission"
 
 export const permissions = [
     { name: "user:create", description: "Create Users" },

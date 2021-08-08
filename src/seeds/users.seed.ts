@@ -1,6 +1,6 @@
 import { EntityManager, Equal, In } from "typeorm";
-import { User } from "../entities/user"
-import { Group } from "../entities/group"
+import { User } from "../app/entities/user"
+import { Group } from "../app/entities/group"
 
 const users = [
     {

@@ -1,7 +1,6 @@
-import { group } from "console";
 import { Equal, In, EntityManager } from "typeorm";
-import { Group } from "../entities/group"
-import { Permission } from "../entities/permission"
+import { Group } from "../app/entities/group"
+import { Permission } from "../app/entities/permission"
 import { permissions } from "./permissions.seed";
 
 

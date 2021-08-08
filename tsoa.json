@@ -1,6 +1,6 @@
 {
   "entryFile": "src/index.ts",
-   "controllerPathGlobs": ["src/controllers/*/*.controller.ts"],
+  "controllerPathGlobs": ["src/app/controllers/*/*.controller.ts"],
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
     "outputDirectory": "src/generated",
@@ -18,7 +18,7 @@
     }
   },
   "routes": {
-    "authenticationModule": "./src/auth/authentication.ts",
+    "authenticationModule": "./src/app/auth/authentication.ts",
     "routesDir": "src/generated"
   },
   "ignore": ["**/node_modules/**"]

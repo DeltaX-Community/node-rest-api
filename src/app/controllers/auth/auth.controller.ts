@@ -4,7 +4,7 @@ import { Equal, getManager, In } from "typeorm"
 import * as jwt from "jsonwebtoken";
 import { getUser, getUserById } from "../../auth/auth.service";
 import { ForbiddenError, UnauthorizedError } from "../../errors/MessageError";
-import { config } from "../../config"
+import { config } from "../../../config"
 
 
 let refreshTokens: string[] = []

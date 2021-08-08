@@ -8,11 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
+    runs-on: ubuntu-latest 
     
     steps:
     - uses: actions/checkout@v2
@@ -27,14 +23,14 @@ jobs:
           "revision" : "$(git rev-list HEAD --count)",  
           "date" : "$(date --iso-8601=seconds)",
           "git_revision" : "$(git rev-parse --short HEAD)"
-        } 
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+        }  
 
     - name: Build
       run: |
         npm install
         npm run build 
+
+    - name: Test E2E
+      run: | 
+        npm run e2e
+
