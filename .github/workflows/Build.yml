@@ -32,5 +32,6 @@ jobs:
 
     - name: Test E2E
       run: | 
+        npm run seed
         npm run e2e
 
