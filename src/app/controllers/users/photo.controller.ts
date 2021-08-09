@@ -1,85 +1,95 @@
-import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Tags, Security, Request } from "tsoa";
-import { Photo } from "../../entities/photo";
-import { User } from "../../entities/user";
-import { Paginate } from "../../dtos/paginate.dto";
+import {
+  Body,
+  Controller,
+  Get,
+  Path,
+  Post,
+  Put,
+  Query,
+  Route,
+  SuccessResponse,
+  Tags,
+  Security,
+  Request
+} from "tsoa"
+import { Photo } from "../../entities/photo"
+import { User } from "../../entities/user"
+import { Paginate } from "../../dtos/paginate.dto"
 import { getManager, Equal } from "typeorm"
-import { CreatePhotoParams, UpdatePhotoParams } from "../../dtos/photo.dto";
-import { ForbiddenError } from "../../../app/errors/MessageError";
-import { validatePermissions } from "../../../app/auth/authentication";
-
+import { CreatePhotoParams, UpdatePhotoParams } from "../../dtos/photo.dto"
+import { ForbiddenError } from "../../../app/errors/MessageError"
+import { validatePermissions } from "../../../app/auth/authentication"
+import { IAuthData } from "src/app/auth/auth.service"
 
 @Route("api/v1/users/photos")
 @Tags("Users")
 export class PhotoController extends Controller {
+  @Get("{id}")
+  @Security("jwt")
+  public async getItem(@Path() id: number): Promise<Photo> {
+    return getManager().findOneOrFail(Photo, id)
+  }
 
-    @Get("{id}")
-    @Security("jwt")
-    public async getItem(
-        @Path() id: number
-    ): Promise<Photo | any> {
-        return getManager().findOne(Photo, id);
+  @Put("{id}")
+  @Security("jwt")
+  public async updateItem(
+    @Request() req: { user: IAuthData },
+    @Path() id: number,
+    @Body() item: UpdatePhotoParams
+  ): Promise<Photo | void> {
+    const manager = await getManager()
+    const photo = await manager.findOneOrFail(Photo, id, {
+      relations: ["users"]
+    })
+
+    if (!validatePermissions(req.user, ["userAdmin"], photo.user.username)) {
+      throw new ForbiddenError("User can not edit this photo!")
     }
 
-    @Put("{id}")
-    @Security("jwt")
-    public async updateItem(
-        @Request() req: any,
-        @Path() id: number,
-        @Body() item: UpdatePhotoParams
-    ): Promise<Photo | void> {
-        var manager = await getManager()
-        const photo = await manager.findOneOrFail(Photo, id, { relations: ["users"] })
+    photo.url = item.url
+    return manager.save<Photo>(photo)
+  }
 
-        if (!validatePermissions(req.user, ["userAdmin"], photo.user.username)) {
-            throw new ForbiddenError("User can not edit this photo!");
-        }
+  @Get("")
+  @Security("jwt")
+  public async getList(
+    @Query() page = 1,
+    @Query() perPage = 10,
+    @Query() username: string | null = null
+  ): Promise<Paginate<Photo>> {
+    const skip = perPage * (page - 1)
+    const manager = await getManager()
 
-        photo.url = item.url
-        return manager.save<Photo>(photo)
+    let query = manager.createQueryBuilder(Photo, "photo").innerJoin("photo.user", "user")
+
+    if (username) {
+      query = query.where("user.username = :username", { username })
     }
 
-    @Get("")
-    @Security("jwt")
-    public async getList(
-        @Query() page: number = 1,
-        @Query() perPage: number = 10,
-        @Query() username: string | null = null
-    ): Promise<Paginate<Photo>> {
-        const skip = perPage * (page - 1);
-        const manager = await getManager()
+    query.offset(skip)
+    query.limit(perPage)
 
-        var query = manager
-            .createQueryBuilder(Photo, "photo")
-            .innerJoin("photo.user", "user");
+    const rows = await query.getMany()
+    const total = await query.getCount()
+    return { rows, page, perPage, total }
+  }
 
-        if (username) {
-            query = query.where("user.username = :username", { username });
-        }
-
-        query.offset(skip)
-        query.limit(perPage)
-
-        const rows = await query.getMany();
-        const total = await query.getCount();
-        return { rows, page, perPage, total }
+  @SuccessResponse("201", "Created")
+  @Post()
+  @Security("jwt")
+  public async createItem(
+    @Request() req: { user: IAuthData },
+    @Body() item: CreatePhotoParams
+  ): Promise<Photo> {
+    if (!validatePermissions(req.user, ["userAdmin"], item.username)) {
+      throw new ForbiddenError("Logged user can not create photo for another user!")
     }
 
-    @SuccessResponse("201", "Created")
-    @Post()
-    @Security("jwt")
-    public async createItem(
-        @Request() req: any,
-        @Body() item: CreatePhotoParams
-    ): Promise<Photo> {
-
-        if (!validatePermissions(req.user, ["userAdmin"], item.username)) {
-            throw new ForbiddenError("Logged user can not create photo for another user!");
-        }
-
-        var manager = await getManager()
-        const newItem = manager.create(Photo, item)
-        newItem.user = await manager.findOneOrFail(User, { where: { username: Equal(item.username) } })
-        return manager.save<Photo>(newItem)
-    }
+    const manager = await getManager()
+    const newItem = manager.create(Photo, item)
+    newItem.user = await manager.findOneOrFail(User, {
+      where: { username: Equal(item.username) }
+    })
+    return manager.save<Photo>(newItem)
+  }
 }
-

@@ -1,21 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
-import { User } from "./user";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm"
+import { User } from "./user"
 
 @Entity({ name: "photos" })
 export class Photo {
+  @PrimaryGeneratedColumn()
+  id!: number
 
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @ManyToOne(() => User, (user) => user.photos)
+  user!: User
 
-    @ManyToOne(() => User, user => user.photos)
-    user!: User;
+  @Column()
+  url!: string
 
-    @Column()
-    url!: string;
+  @CreateDateColumn()
+  createAt!: Date
 
-    @CreateDateColumn()
-    createAt!: Date;
-
-    @Column({ default: true })
-    isActive!: boolean;
+  @Column({ default: true })
+  isActive!: boolean
 }

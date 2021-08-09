@@ -1,5 +1,4 @@
 export interface CreateProfileParams {
-    gender?: string;
-    photo?: string;
+  gender?: string
+  photo?: string
 }
-

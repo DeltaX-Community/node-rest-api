@@ -748,12 +748,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"anyOf": [
-										{
-											"$ref": "#/components/schemas/Group"
-										},
-										{}
-									]
+									"$ref": "#/components/schemas/Group"
 								}
 							}
 						}
@@ -1211,12 +1206,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"anyOf": [
-										{
-											"$ref": "#/components/schemas/Photo"
-										},
-										{}
-									]
+									"$ref": "#/components/schemas/Photo"
 								}
 							}
 						}

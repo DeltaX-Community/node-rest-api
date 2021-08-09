@@ -1,2 +1,2 @@
-import 'source-map-support/register';
-process.env.NODE_ENV = 'e2e';
+import "source-map-support/register"
+process.env.NODE_ENV = "e2e"
