@@ -1,17 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Delete,
-  Path,
-  Post,
-  Put,
-  Query,
-  Route,
-  SuccessResponse,
-  Tags,
-  Security
-} from "tsoa"
+import { Controller, Get, Path, Delete, Post, Put } from "tsoa"
+import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
 import { Permission } from "../../entities/permission"
 import { Paginate } from "../../dtos/paginate.dto"
 import { Equal, getManager } from "typeorm"
@@ -32,7 +20,7 @@ export class PermissionController extends Controller {
     @Path() id: number,
     @Body() item: UpdatePermissionParams
   ): Promise<Permission> {
-    const manager = await getManager()
+    const manager = getManager()
     const perm = await manager.findOneOrFail(Permission, id)
 
     perm.description = item.description || ""
@@ -52,7 +40,7 @@ export class PermissionController extends Controller {
     @Query() isActive = true
   ): Promise<Paginate<Permission>> {
     const skip = perPage * (page - 1)
-    const manager = await getManager()
+    const manager = getManager()
 
     const rowsAndTotal = await manager.findAndCount(Permission, {
       take: perPage,
@@ -69,7 +57,7 @@ export class PermissionController extends Controller {
   @Post()
   @Security("jwt", ["permissions:create"])
   public async createPermission(@Body() item: CreatePermissionParams): Promise<Permission> {
-    const manager = await getManager()
+    const manager = getManager()
     const newItem = manager.create(Permission, item)
 
     this.setStatus(201)

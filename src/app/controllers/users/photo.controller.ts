@@ -1,17 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Path,
-  Post,
-  Put,
-  Query,
-  Route,
-  SuccessResponse,
-  Tags,
-  Security,
-  Request
-} from "tsoa"
+import { Controller, Get, Path, Post, Put, Request } from "tsoa"
+import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
 import { Photo } from "../../entities/photo"
 import { User } from "../../entities/user"
 import { Paginate } from "../../dtos/paginate.dto"
@@ -37,7 +25,7 @@ export class PhotoController extends Controller {
     @Path() id: number,
     @Body() item: UpdatePhotoParams
   ): Promise<Photo | void> {
-    const manager = await getManager()
+    const manager = getManager()
     const photo = await manager.findOneOrFail(Photo, id, {
       relations: ["users"]
     })
@@ -58,7 +46,7 @@ export class PhotoController extends Controller {
     @Query() username: string | null = null
   ): Promise<Paginate<Photo>> {
     const skip = perPage * (page - 1)
-    const manager = await getManager()
+    const manager = getManager()
 
     let query = manager.createQueryBuilder(Photo, "photo").innerJoin("photo.user", "user")
 
@@ -85,7 +73,7 @@ export class PhotoController extends Controller {
       throw new ForbiddenError("Logged user can not create photo for another user!")
     }
 
-    const manager = await getManager()
+    const manager = getManager()
     const newItem = manager.create(Photo, item)
     newItem.user = await manager.findOneOrFail(User, {
       where: { username: Equal(item.username) }

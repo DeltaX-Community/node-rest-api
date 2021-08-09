@@ -1,16 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Path,
-  Post,
-  Put,
-  Query,
-  Route,
-  SuccessResponse,
-  Security,
-  Tags
-} from "tsoa"
+import { Body, Controller, Get, Path, Post, Put, Query } from "tsoa"
+import { Route, SuccessResponse, Security, Tags } from "tsoa"
 import { User } from "../../entities/user"
 import { CreateUserParams, UpdateUserParams } from "../../dtos/user.dto"
 import { Paginate } from "../../dtos/paginate.dto"
@@ -23,8 +12,8 @@ import { Group } from "../../entities/group"
 export class UsersController extends Controller {
   @Get("{id}")
   @Security("jwt")
-  public async getUser(@Path() id: number): Promise<User | any> {
-    return getManager().findOne(User, id, { relations: ["photos", "groups"] })
+  public async getUser(@Path() id: number): Promise<User> {
+    return getManager().findOneOrFail(User, id, { relations: ["photos", "groups"] })
   }
 
   @Put("{id}")
@@ -70,7 +59,7 @@ export class UsersController extends Controller {
     @Query() isActive = true
   ): Promise<Paginate<User>> {
     const skip = perPage * (page - 1)
-    const manager = await getManager()
+    const manager = getManager()
 
     const rowsAndTotal = await manager.findAndCount(User, {
       take: perPage,

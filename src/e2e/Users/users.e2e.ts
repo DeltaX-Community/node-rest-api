@@ -8,7 +8,7 @@ export function usersDescribe(app) {
     // Auth
     const resAuth = await request(app).post("/auth/login").send({ password: "", username: "admin" })
 
-    const accessToken = resAuth.body.accessToken as string
+    const accessToken = (resAuth.body as { accessToken: string }).accessToken
     expect(accessToken).not.to.be.empty
 
     const res = await request(app)

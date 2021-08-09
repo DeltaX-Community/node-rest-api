@@ -11,6 +11,15 @@ export interface IAuthData {
   groups: string[]
 }
 
+export function getPermissions(userId: number) {
+  return getManager()
+    .createQueryBuilder(Permission, "permissions")
+    .innerJoin("permissions.groups", "groups")
+    .innerJoin("groups.users", "users")
+    .where("users.id = :id", { id: userId })
+    .getMany()
+}
+
 export async function getUser(username: string, password: string): Promise<IAuthData> {
   const user = await getManager().findOne(User, {
     select: ["username", "id", "passwordHash", "fullName"],
@@ -48,13 +57,4 @@ export async function getUserById(id: number): Promise<IAuthData> {
     permissions: permissions?.map((p) => p.name),
     groups: user.groups?.map((g) => g.name)
   }
-}
-
-export function getPermissions(userId: number) {
-  return getManager()
-    .createQueryBuilder(Permission, "permissions")
-    .innerJoin("permissions.groups", "groups")
-    .innerJoin("groups.users", "users")
-    .where("users.id = :id", { id: userId })
-    .getMany()
 }

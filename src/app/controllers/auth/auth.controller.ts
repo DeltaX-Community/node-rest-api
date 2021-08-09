@@ -101,7 +101,7 @@ export class AuthController extends Controller {
 
   @Post("logout")
   @Security("jwt")
-  public async logout(@Body() refreshToken: { token: string }): Promise<string> {
+  public logout(@Body() refreshToken: { token: string }): string {
     refreshTokens = refreshTokens.filter((t) => t !== refreshToken.token)
     return "Ok"
   }

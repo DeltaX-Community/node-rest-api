@@ -6,23 +6,56 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "project": "tsconfig.lint.json",
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "plugins": ["prettier"],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "no-use-before-define": "error",
+    "prefer-const": "error",
+     "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": ["camelCase"]
+      },
+      {
+        "selector": "variable",
+        "format": ["camelCase", "UPPER_CASE"]
+      },
+      {
+        "selector": "parameter",
+        "format": ["camelCase"],
+        "leadingUnderscore": "allow"
+      },
+      {
+        "selector": "memberLike",
+        "modifiers": ["private"],
+        "format": ["camelCase"],
+        "leadingUnderscore": "require"
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
+    ],
     "prettier/prettier": ["error",
-      { 
+      {
+        "parser": "typescript",
         "trailingComma": "none",
         "tabWidth": 2,
         "semi": false,
         "printWidth": 100,
-        "singleQuote": false
+        "singleQuote": false,
+        "bracketSpacing": true
       }
     ]
   }

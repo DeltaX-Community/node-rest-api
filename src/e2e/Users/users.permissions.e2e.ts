@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { expect } from "chai"
 import { agent as request } from "supertest"
 

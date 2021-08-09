@@ -78,7 +78,8 @@ export async function expressAuthentication(
     token = authorization.split(" ")[1]
   } else {
     if (DEV) console.log("Check x-access-token authorization")
-    token = request.body.token || request.headers["x-access-token"]
+    token =
+      (request.body as { token: string }).token || (request.headers["x-access-token"] as string)
   }
 
   if (token) {

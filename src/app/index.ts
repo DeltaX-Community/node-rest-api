@@ -1,6 +1,6 @@
 import express from "express"
 import { RegisterRoutes } from "../generated/routes"
-import { RegisterErrorMiddleware } from "./errors/errorMiddleware"
+import { registerErrorMiddleware } from "./errors/errorMiddleware"
 import version from "../generated/version.json"
 
 const app = express()
@@ -13,6 +13,6 @@ app.get("/version", (_req, resp) => {
 })
 
 RegisterRoutes(app)
-RegisterErrorMiddleware(app)
+registerErrorMiddleware(app)
 
 export { app }

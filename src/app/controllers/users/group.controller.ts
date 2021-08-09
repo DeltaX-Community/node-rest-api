@@ -1,17 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Path,
-  Delete,
-  Post,
-  Put,
-  Query,
-  Route,
-  SuccessResponse,
-  Security,
-  Tags
-} from "tsoa"
+import { Controller, Get, Path, Delete, Post, Put } from "tsoa"
+import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
 import { CreateGroupParams, UpdateGroupParams } from "../../dtos/group.dto"
 import { Paginate } from "../../dtos/paginate.dto"
 import { Equal, getManager, In } from "typeorm"
@@ -67,7 +55,7 @@ export class RoleController extends Controller {
     @Query() isActive = true
   ): Promise<Paginate<Group>> {
     const skip = perPage * (page - 1)
-    const manager = await getManager()
+    const manager = getManager()
     const relations: string[] = []
 
     if (includeUsers) relations.push("users")
