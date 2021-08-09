@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Security, Tags } from "tsoa";
+import { Body, Controller, Get, Path, Delete, Post, Put, Query, Route, SuccessResponse, Security, Tags } from "tsoa";
 import { CreateGroupParams, UpdateGroupParams } from "../../dtos/group.dto";
 import { Paginate } from "../../dtos/paginate.dto";
 import { Equal, getManager, In } from "typeorm"
@@ -7,11 +7,12 @@ import { Permission } from "../../entities/permission";
 import { User } from "../../entities/user";
 
 
-@Route("users/groups")
+@Route("api/v1/users/groups")
 @Tags("Users")
 export class RoleController extends Controller {
 
     @Get("{id}")
+    @Security("jwt", ['groups:read'])
     public async getGroup(
         @Path() id: number
     ): Promise<Group | any> {
@@ -19,13 +20,19 @@ export class RoleController extends Controller {
     }
 
     @Put("{id}")
-    /// @Security("jwt", ["admin"])
+    @Security("jwt", ['groups:update'])
     public async updateGroup(
         @Path() id: number,
         @Body() item: UpdateGroupParams
     ): Promise<Group> {
         return await getManager().transaction(async (trx) => {
-            const group = await trx.findOneOrFail(Group, id, { relations: ["users", "permissions"] });
+            const group = await trx.findOneOrFail(Group, id, {
+                relations: ["users", "permissions"],
+            });
+
+            if (item.isActive != undefined) {
+                group.isActive = item.isActive;
+            }
 
             if (item.permissions) {
                 group.permissions = await trx.find(Permission, { where: { "name": In(item.permissions.map(p => p.name)) } });
@@ -45,19 +52,29 @@ export class RoleController extends Controller {
         @Query() perPage: number = 100,
         @Query() includeUsers: boolean = false,
         @Query() includePermissions: boolean = false,
+        @Query() isActive: boolean = true,
     ): Promise<Paginate<Group>> {
         const skip = perPage * (page - 1);
         const manager = await getManager()
         const relations: string[] = [];
+
         if (includeUsers) relations.push("users")
         if (includePermissions) relations.push("permissions")
-        const rows = await manager.find(Group, { take: perPage, skip, relations });
-        const total = await manager.count(Group)
+
+        const rowsAndTotal = await manager.findAndCount(Group, {
+            take: perPage, skip,
+            relations,
+            where: { isActive: Equal(isActive) }
+        });
+
+        const rows = rowsAndTotal[0]
+        const total = rowsAndTotal[1]
         return { rows, page, perPage, total }
     }
 
     @Post()
     @SuccessResponse("201", "Created")
+    @Security("jwt", ['groups:create'])
     public async createGroup(
         @Body() item: CreateGroupParams
     ): Promise<Group> {
@@ -70,5 +87,14 @@ export class RoleController extends Controller {
 
             return trx.save<Group>(group)
         })
+    }
+
+    @Delete("{id}")
+    @Security("jwt", ['groups:delete'])
+    public async deleteGroup(
+        @Path() id: number
+    ): Promise<{ affected: number }> {
+        const result = await getManager().delete(Group, id)
+        return { affected: result.affected || 0 }
     }
 }

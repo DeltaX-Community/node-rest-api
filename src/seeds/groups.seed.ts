@@ -16,7 +16,7 @@ let groups = [
     },
     {
         name: "userAdmin", description: "Administrador de Usuario y grupos",
-        permissions: permissions.filter(p => p.name.startsWith('usesr:') || p.name.startsWith("grosup:"))
+        permissions: permissions.filter(p => p.name.startsWith('users:') || p.name.startsWith("groups:"))
             .map(p => { return { name: p.name } })
     },
 ] as Group[];

@@ -189,6 +189,9 @@
 					"description": {
 						"type": "string"
 					},
+					"isActive": {
+						"type": "boolean"
+					},
 					"permissions": {
 						"items": {
 							"properties": {
@@ -285,6 +288,9 @@
 				"properties": {
 					"description": {
 						"type": "string"
+					},
+					"isActive": {
+						"type": "boolean"
 					}
 				},
 				"type": "object",
@@ -403,6 +409,9 @@
 					},
 					"password": {
 						"type": "string"
+					},
+					"isActive": {
+						"type": "boolean"
 					},
 					"groups": {
 						"items": {
@@ -730,7 +739,7 @@
 				}
 			}
 		},
-		"/users/groups/{id}": {
+		"/api/v1/users/groups/{id}": {
 			"get": {
 				"operationId": "GetGroup",
 				"responses": {
@@ -753,7 +762,13 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"groups:read"
+						]
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -783,7 +798,13 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"groups:update"
+						]
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -805,9 +826,54 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteGroup",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"affected": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"affected"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"jwt": [
+							"groups:delete"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
-		"/users/groups": {
+		"/api/v1/users/groups": {
 			"get": {
 				"operationId": "ListGroup",
 				"responses": {
@@ -864,6 +930,15 @@
 							"default": false,
 							"type": "boolean"
 						}
+					},
+					{
+						"in": "query",
+						"name": "isActive",
+						"required": false,
+						"schema": {
+							"default": true,
+							"type": "boolean"
+						}
 					}
 				]
 			},
@@ -884,7 +959,13 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"groups:create"
+						]
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -898,7 +979,7 @@
 				}
 			}
 		},
-		"/users/permissions/{id}": {
+		"/api/v1/users/permissions/{id}": {
 			"get": {
 				"operationId": "GetPermission",
 				"responses": {
@@ -919,12 +1000,7 @@
 				"security": [
 					{
 						"jwt": [
-							"admin"
-						]
-					},
-					{
-						"jwt": [
-							"permission:read"
+							"permissions:read"
 						]
 					}
 				],
@@ -957,7 +1033,13 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"permissions:update"
+						]
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -979,9 +1061,54 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeletePermission",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"affected": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"affected"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"jwt": [
+							"permissions:delete"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
-		"/users/permissions": {
+		"/api/v1/users/permissions": {
 			"get": {
 				"operationId": "ListPermissions",
 				"responses": {
@@ -1002,7 +1129,7 @@
 				"security": [
 					{
 						"jwt": [
-							"permission:read"
+							"permissions:read"
 						]
 					}
 				],
@@ -1026,6 +1153,15 @@
 							"format": "double",
 							"type": "number"
 						}
+					},
+					{
+						"in": "query",
+						"name": "isActive",
+						"required": false,
+						"schema": {
+							"default": true,
+							"type": "boolean"
+						}
 					}
 				]
 			},
@@ -1046,7 +1182,13 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": [
+							"permissions:create"
+						]
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -1060,7 +1202,7 @@
 				}
 			}
 		},
-		"/users/photos/{id}": {
+		"/api/v1/users/photos/{id}": {
 			"get": {
 				"operationId": "GetItem",
 				"responses": {
@@ -1083,7 +1225,11 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -1118,7 +1264,11 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -1142,7 +1292,7 @@
 				}
 			}
 		},
-		"/users/photos": {
+		"/api/v1/users/photos": {
 			"get": {
 				"operationId": "GetList",
 				"responses": {
@@ -1160,7 +1310,11 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "query",
@@ -1210,7 +1364,11 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -1224,7 +1382,7 @@
 				}
 			}
 		},
-		"/users/{id}": {
+		"/api/v1/users/{id}": {
 			"get": {
 				"operationId": "GetUser",
 				"responses": {
@@ -1284,7 +1442,12 @@
 				"security": [
 					{
 						"jwt": [
-							"admin"
+							"userAdmin"
+						]
+					},
+					{
+						"jwt": [
+							"users:update"
 						]
 					}
 				],
@@ -1311,7 +1474,7 @@
 				}
 			}
 		},
-		"/users": {
+		"/api/v1/users": {
 			"get": {
 				"operationId": "ListUsers",
 				"responses": {
@@ -1329,7 +1492,11 @@
 				"tags": [
 					"Users"
 				],
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "query",
@@ -1349,6 +1516,15 @@
 							"default": 10,
 							"format": "double",
 							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "isActive",
+						"required": false,
+						"schema": {
+							"default": true,
+							"type": "boolean"
 						}
 					}
 				]
@@ -1373,7 +1549,12 @@
 				"security": [
 					{
 						"jwt": [
-							"admin"
+							"userAdmin"
+						]
+					},
+					{
+						"jwt": [
+							"users:create"
 						]
 					}
 				],

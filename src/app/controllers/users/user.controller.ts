@@ -2,11 +2,11 @@ import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, 
 import { User } from "../../entities/user";
 import { CreateUserParams, UpdateUserParams } from "../../dtos/user.dto";
 import { Paginate } from "../../dtos/paginate.dto";
-import { getManager, In } from "typeorm";
+import { Equal, getManager, In } from "typeorm";
 import { Photo } from "../../entities/photo";
 import { Group } from "../../entities/group";
 
-@Route("users")
+@Route("api/v1/users")
 @Tags("Users")
 export class UsersController extends Controller {
 
@@ -19,7 +19,8 @@ export class UsersController extends Controller {
     }
 
     @Put("{id}")
-    @Security("jwt", ["admin"])
+    @Security("jwt", ["userAdmin"])
+    @Security("jwt", ['users:update'])
     public async updateUser(
         @Path() id: number,
         @Body() item: UpdateUserParams
@@ -34,7 +35,10 @@ export class UsersController extends Controller {
                 user.email = item.email
             }
             if (item.password) {
-                user.setPassword(item.password);
+                user.setPassword(item.password)
+            }
+            if (item.isActive != undefined) {
+                user.isActive = item.isActive
             }
             // Overwrite Groups
             if (item.groups) {
@@ -49,20 +53,29 @@ export class UsersController extends Controller {
     }
 
     @Get("")
+    @Security("jwt")
     public async listUsers(
         @Query() page: number = 1,
-        @Query() perPage: number = 10
+        @Query() perPage: number = 10,
+        @Query() isActive: boolean = true
     ): Promise<Paginate<User>> {
         const skip = perPage * (page - 1);
         const manager = await getManager()
-        const rows = await manager.find(User, { take: perPage, skip });
-        const total = await manager.count(User)
+
+        const rowsAndTotal = await manager.findAndCount(User, {
+            take: perPage, skip,
+            where: { isActive: Equal(isActive) }
+        });
+
+        const rows = rowsAndTotal[0]
+        const total = rowsAndTotal[1]
         return { rows, page, perPage, total }
     }
 
     @SuccessResponse("201", "Created")
     @Post()
-    @Security("jwt", ["admin"])
+    @Security("jwt", ["userAdmin"])
+    @Security("jwt", ['users:create'])
     public async createUser(
         @Body() requestBody: CreateUserParams
     ): Promise<User> {

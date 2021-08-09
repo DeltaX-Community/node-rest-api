@@ -9,8 +9,7 @@ import { config, development as DEV } from "../../config"
  * Valida permisos de usuario.
  * 
  * Se usa scope para validar permisos
- * Rechaza si el scope solicita un permiso no incluido 
- * en Permission o en Group
+ * Rechaza si el scope solicita un permiso no incluido en permissions o en groups
  * 
  * si pertenece al grupo admin'
  * 
@@ -32,17 +31,25 @@ import { config, development as DEV } from "../../config"
  * @param user 
  * @param scopes 
  */
-export function validatePermissions(user: IAuthData, scopes?: string[]) {
-    if (user?.groups?.includes("admin")) {
-        return;
+export function validatePermissions(
+    user: IAuthData,
+    scopes?: string[],
+    username: string | null = null
+): boolean {
+    if (user.groups?.includes("admin")) {
+        return true;
+    }
+    if (username && user.username == username) {
+        return true;
     }
     if (scopes) {
         for (let scope of scopes) {
             if (!user.permissions?.includes(scope) && !user.groups?.includes(scope)) {
-                throw new ForbiddenError("JWT does not contain required permission.")
+                return false
             }
         }
     }
+    return !!user;
 }
 
 
@@ -62,7 +69,9 @@ export async function expressAuthentication(
         const password = userPass[1]
 
         const user = await getUser(username, password);
-        validatePermissions(user, scopes)
+        if (!validatePermissions(user, scopes)) {
+            throw new ForbiddenError("JWT does not contain required permission.")
+        }
         return user;
     }
 
@@ -78,7 +87,9 @@ export async function expressAuthentication(
     if (token) {
         const decoded = jwt.verify(token, config.accessTokenSecret, { complete: true }) as { payload: any };
         const user = decoded.payload as IAuthData;
-        validatePermissions(user, scopes)
+        if (!validatePermissions(user, scopes)) {
+            throw new ForbiddenError("JWT does not contain required permission.")
+        }
         return user;
     }
 

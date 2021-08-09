@@ -8,6 +8,7 @@ export interface UpdateUserParams {
     fullName?: string;
     email?: string;
     password?: string;
+    isActive?: boolean;
     groups?: { name: string; }[];
     photos?: { url: string; }[];
 }

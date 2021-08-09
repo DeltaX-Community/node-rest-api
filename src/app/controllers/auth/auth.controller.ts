@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Path, Post, Put, Query, Route, Request, Security, Tags } from "tsoa";
+import { Body, Controller, Get, Post, Route, Request, Security, Tags } from "tsoa";
 import { User } from "../../entities/user";
 import { Equal, getManager, In } from "typeorm"
 import * as jwt from "jsonwebtoken";

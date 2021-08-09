@@ -6,6 +6,7 @@ export interface CreateGroupParams {
 
 export interface UpdateGroupParams {
     description?: string;
+    isActive?: boolean;
     permissions?: { name: string; }[];
     users?: { username: string; }[];
 }

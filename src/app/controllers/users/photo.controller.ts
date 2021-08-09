@@ -1,16 +1,19 @@
-import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Tags } from "tsoa";
+import { Body, Controller, Get, Path, Post, Put, Query, Route, SuccessResponse, Tags, Security, Request } from "tsoa";
 import { Photo } from "../../entities/photo";
 import { User } from "../../entities/user";
 import { Paginate } from "../../dtos/paginate.dto";
 import { getManager, Equal } from "typeorm"
 import { CreatePhotoParams, UpdatePhotoParams } from "../../dtos/photo.dto";
+import { ForbiddenError } from "../../../app/errors/MessageError";
+import { validatePermissions } from "../../../app/auth/authentication";
 
 
-@Route("users/photos")
+@Route("api/v1/users/photos")
 @Tags("Users")
 export class PhotoController extends Controller {
 
     @Get("{id}")
+    @Security("jwt")
     public async getItem(
         @Path() id: number
     ): Promise<Photo | any> {
@@ -18,17 +21,25 @@ export class PhotoController extends Controller {
     }
 
     @Put("{id}")
+    @Security("jwt")
     public async updateItem(
+        @Request() req: any,
         @Path() id: number,
         @Body() item: UpdatePhotoParams
     ): Promise<Photo | void> {
         var manager = await getManager()
-        const photo = await manager.findOneOrFail(Photo, id)
+        const photo = await manager.findOneOrFail(Photo, id, { relations: ["users"] })
+
+        if (!validatePermissions(req.user, ["userAdmin"], photo.user.username)) {
+            throw new ForbiddenError("User can not edit this photo!");
+        }
+
         photo.url = item.url
         return manager.save<Photo>(photo)
     }
 
     @Get("")
+    @Security("jwt")
     public async getList(
         @Query() page: number = 1,
         @Query() perPage: number = 10,
@@ -55,12 +66,19 @@ export class PhotoController extends Controller {
 
     @SuccessResponse("201", "Created")
     @Post()
+    @Security("jwt")
     public async createItem(
+        @Request() req: any,
         @Body() item: CreatePhotoParams
     ): Promise<Photo> {
+
+        if (!validatePermissions(req.user, ["userAdmin"], item.username)) {
+            throw new ForbiddenError("Logged user can not create photo for another user!");
+        }
+
         var manager = await getManager()
         const newItem = manager.create(Photo, item)
-        newItem.user = await manager.findOneOrFail(User, { where: { "username": Equal(item.username) } })
+        newItem.user = await manager.findOneOrFail(User, { where: { username: Equal(item.username) } })
         return manager.save<Photo>(newItem)
     }
 }

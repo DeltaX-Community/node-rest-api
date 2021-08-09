@@ -2,20 +2,20 @@ import { EntityManager, Equal } from "typeorm";
 import { Permission } from "../app/entities/permission"
 
 export const permissions = [
-    { name: "user:create", description: "Create Users" },
-    { name: "user:update", description: "Update User" },
-    { name: "user:read", description: "Read User" },
-    { name: "user:delete", description: "Delete User" },
+    { name: "users:create", description: "Create Users" },
+    { name: "users:update", description: "Update Users" },
+    { name: "users:read", description: "Read Users" },
+    { name: "users:delete", description: "Delete Users" },
 
-    { name: "group:create", description: "Create Group" },
-    { name: "group:update", description: "Update Group" },
-    { name: "group:read", description: "Read Group" },
-    { name: "group:delete", description: "Delete Group" },
+    { name: "groups:create", description: "Create Groups" },
+    { name: "groups:update", description: "Update Groups" },
+    { name: "groups:read", description: "Read Groups" },
+    { name: "groups:delete", description: "Delete Groups" },
 
-    { name: "permission:create", description: "Create Permission" },
-    { name: "permission:update", description: "Update Permission" },
-    { name: "permission:read", description: "Read Permission" },
-    { name: "permission:delete", description: "Delete Permission" },
+    { name: "permissions:create", description: "Create Permissions" },
+    { name: "permissions:update", description: "Update Permissions" },
+    { name: "permissions:read", description: "Read Permissions" },
+    { name: "permissions:delete", description: "Delete Permissions" },
 ] as Permission[];
 
 

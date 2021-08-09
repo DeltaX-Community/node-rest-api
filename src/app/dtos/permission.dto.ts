@@ -5,4 +5,5 @@ export interface CreatePermissionParams {
 
 export interface UpdatePermissionParams {
     description?: string;
+    isActive?: boolean;
 }

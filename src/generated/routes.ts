@@ -82,6 +82,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "description": {"dataType":"string"},
+            "isActive": {"dataType":"boolean"},
             "permissions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},
             "users": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"username":{"dataType":"string","required":true}}}},
         },
@@ -113,6 +114,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "description": {"dataType":"string"},
+            "isActive": {"dataType":"boolean"},
         },
         "additionalProperties": false,
     },
@@ -171,6 +173,7 @@ const models: TsoaRoute.Models = {
             "fullName": {"dataType":"string"},
             "email": {"dataType":"string"},
             "password": {"dataType":"string"},
+            "isActive": {"dataType":"boolean"},
             "groups": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},
             "photos": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string","required":true}}}},
         },
@@ -327,7 +330,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/groups/:id',
+        app.get('/api/v1/users/groups/:id',
+            authenticateMiddleware([{"jwt":["groups:read"]}]),
 
             function RoleController_getGroup(request: any, response: any, next: any) {
             const args = {
@@ -350,7 +354,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/users/groups/:id',
+        app.put('/api/v1/users/groups/:id',
+            authenticateMiddleware([{"jwt":["groups:update"]}]),
 
             function RoleController_updateGroup(request: any, response: any, next: any) {
             const args = {
@@ -374,7 +379,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/groups',
+        app.get('/api/v1/users/groups',
 
             function RoleController_listGroup(request: any, response: any, next: any) {
             const args = {
@@ -382,6 +387,7 @@ export function RegisterRoutes(app: express.Router) {
                     perPage: {"default":100,"in":"query","name":"perPage","dataType":"double"},
                     includeUsers: {"default":false,"in":"query","name":"includeUsers","dataType":"boolean"},
                     includePermissions: {"default":false,"in":"query","name":"includePermissions","dataType":"boolean"},
+                    isActive: {"default":true,"in":"query","name":"isActive","dataType":"boolean"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -400,7 +406,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/users/groups',
+        app.post('/api/v1/users/groups',
+            authenticateMiddleware([{"jwt":["groups:create"]}]),
 
             function RoleController_createGroup(request: any, response: any, next: any) {
             const args = {
@@ -423,8 +430,32 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/permissions/:id',
-            authenticateMiddleware([{"jwt":["admin"]},{"jwt":["permission:read"]}]),
+        app.delete('/api/v1/users/groups/:id',
+            authenticateMiddleware([{"jwt":["groups:delete"]}]),
+
+            function RoleController_deleteGroup(request: any, response: any, next: any) {
+            const args = {
+                    id: {"in":"path","name":"id","required":true,"dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RoleController();
+
+
+            const promise = controller.deleteGroup.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/v1/users/permissions/:id',
+            authenticateMiddleware([{"jwt":["permissions:read"]}]),
 
             function PermissionController_getPermission(request: any, response: any, next: any) {
             const args = {
@@ -447,7 +478,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/users/permissions/:id',
+        app.put('/api/v1/users/permissions/:id',
+            authenticateMiddleware([{"jwt":["permissions:update"]}]),
 
             function PermissionController_updatePermission(request: any, response: any, next: any) {
             const args = {
@@ -471,13 +503,14 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/permissions',
-            authenticateMiddleware([{"jwt":["permission:read"]}]),
+        app.get('/api/v1/users/permissions',
+            authenticateMiddleware([{"jwt":["permissions:read"]}]),
 
             function PermissionController_listPermissions(request: any, response: any, next: any) {
             const args = {
                     page: {"default":1,"in":"query","name":"page","dataType":"double"},
                     perPage: {"default":10,"in":"query","name":"perPage","dataType":"double"},
+                    isActive: {"default":true,"in":"query","name":"isActive","dataType":"boolean"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -496,7 +529,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/users/permissions',
+        app.post('/api/v1/users/permissions',
+            authenticateMiddleware([{"jwt":["permissions:create"]}]),
 
             function PermissionController_createPermission(request: any, response: any, next: any) {
             const args = {
@@ -519,7 +553,32 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/photos/:id',
+        app.delete('/api/v1/users/permissions/:id',
+            authenticateMiddleware([{"jwt":["permissions:delete"]}]),
+
+            function PermissionController_deletePermission(request: any, response: any, next: any) {
+            const args = {
+                    id: {"in":"path","name":"id","required":true,"dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new PermissionController();
+
+
+            const promise = controller.deletePermission.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/v1/users/photos/:id',
+            authenticateMiddleware([{"jwt":[]}]),
 
             function PhotoController_getItem(request: any, response: any, next: any) {
             const args = {
@@ -542,10 +601,12 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/users/photos/:id',
+        app.put('/api/v1/users/photos/:id',
+            authenticateMiddleware([{"jwt":[]}]),
 
             function PhotoController_updateItem(request: any, response: any, next: any) {
             const args = {
+                    req: {"in":"request","name":"req","required":true,"dataType":"object"},
                     id: {"in":"path","name":"id","required":true,"dataType":"double"},
                     item: {"in":"body","name":"item","required":true,"ref":"UpdatePhotoParams"},
             };
@@ -566,7 +627,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/photos',
+        app.get('/api/v1/users/photos',
+            authenticateMiddleware([{"jwt":[]}]),
 
             function PhotoController_getList(request: any, response: any, next: any) {
             const args = {
@@ -591,10 +653,12 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/users/photos',
+        app.post('/api/v1/users/photos',
+            authenticateMiddleware([{"jwt":[]}]),
 
             function PhotoController_createItem(request: any, response: any, next: any) {
             const args = {
+                    req: {"in":"request","name":"req","required":true,"dataType":"object"},
                     item: {"in":"body","name":"item","required":true,"ref":"CreatePhotoParams"},
             };
 
@@ -614,7 +678,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/:id',
+        app.get('/api/v1/users/:id',
             authenticateMiddleware([{"jwt":[]}]),
 
             function UsersController_getUser(request: any, response: any, next: any) {
@@ -638,8 +702,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/users/:id',
-            authenticateMiddleware([{"jwt":["admin"]}]),
+        app.put('/api/v1/users/:id',
+            authenticateMiddleware([{"jwt":["userAdmin"]},{"jwt":["users:update"]}]),
 
             function UsersController_updateUser(request: any, response: any, next: any) {
             const args = {
@@ -663,12 +727,14 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users',
+        app.get('/api/v1/users',
+            authenticateMiddleware([{"jwt":[]}]),
 
             function UsersController_listUsers(request: any, response: any, next: any) {
             const args = {
                     page: {"default":1,"in":"query","name":"page","dataType":"double"},
                     perPage: {"default":10,"in":"query","name":"perPage","dataType":"double"},
+                    isActive: {"default":true,"in":"query","name":"isActive","dataType":"boolean"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -687,8 +753,8 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/users',
-            authenticateMiddleware([{"jwt":["admin"]}]),
+        app.post('/api/v1/users',
+            authenticateMiddleware([{"jwt":["userAdmin"]},{"jwt":["users:create"]}]),
 
             function UsersController_createUser(request: any, response: any, next: any) {
             const args = {
