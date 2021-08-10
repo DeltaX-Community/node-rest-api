@@ -58,8 +58,12 @@ export class RoleController extends Controller {
     const manager = getManager()
     const relations: string[] = []
 
-    if (includeUsers) relations.push("users")
-    if (includePermissions) relations.push("permissions")
+    if (includeUsers) {
+      relations.push("users")
+    }
+    if (includePermissions) {
+      relations.push("permissions")
+    }
 
     const rowsAndTotal = await manager.findAndCount(Group, {
       take: perPage,

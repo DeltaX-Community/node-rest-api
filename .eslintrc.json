@@ -21,7 +21,8 @@
     "@typescript-eslint/restrict-template-expressions": "off",
     "no-use-before-define": "error",
     "prefer-const": "error",
-     "@typescript-eslint/naming-convention": [
+    "curly": "error",  
+    "@typescript-eslint/naming-convention": [
       "error",
       {
         "selector": "default",

@@ -35,6 +35,7 @@ export class UsersController extends Controller {
       if (item.isActive != undefined) {
         user.isActive = item.isActive
       }
+
       // Overwrite Groups
       if (item.groups) {
         user.groups = await trx.find(Group, {
