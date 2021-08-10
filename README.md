@@ -9,19 +9,25 @@
 - Config for development and production
 - Seed data
 - Docker dumy sqlite
-- `End To End` Tests
+- **End To End** Tests
 
 
 download:
-`docker pull damiansimanuk/node-rest-api:v0.2.7
+
+`
+docker pull damiansimanuk/node-rest-api:v0.2.7
 `
 
 Excecute:
-`sudo docker run -p80:3002 damiansimanuk/node-rest-api:v0.2.7
+
+`
+sudo docker run -p80:3002 damiansimanuk/node-rest-api:v0.2.7
 `
 
 Excecute wiht persistent sqlite data:
-`sudo docker run -v shared_data_path:/app/data -p80:3002 damiansimanuk/node-rest-api:v0.2.7
+
+`
+sudo docker run -v shared_data_path:/app/data -p80:3002 damiansimanuk/node-rest-api:v0.2.7
 `
 
 Endpoints:
