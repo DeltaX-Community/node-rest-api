@@ -4,9 +4,8 @@ WORKDIR /app
 
 COPY build /app/build
 COPY *.json /app/
- 
-RUN npm ci --production
-RUN npm i ts-node
+
+RUN npm ci --production 
 
 ENV NODE_ENV production
 ENV PORT 3002
