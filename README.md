@@ -21,13 +21,13 @@ docker pull damiansimanuk/node-rest-api:v0.2.7
 Excecute:
 
 `
-sudo docker run -p80:3002 damiansimanuk/node-rest-api:v0.2.7
+docker run -p80:3002 damiansimanuk/node-rest-api:v0.2.7
 `
 
 Excecute wiht persistent sqlite data:
 
 `
-sudo docker run -v shared_data_path:/app/data -p80:3002 damiansimanuk/node-rest-api:v0.2.7
+docker run -v shared_data_path:/app/data -p80:3002 damiansimanuk/node-rest-api:v0.2.7
 `
 
 Endpoints:
