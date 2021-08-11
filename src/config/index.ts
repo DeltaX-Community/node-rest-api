@@ -11,7 +11,9 @@ const production = env == "production"
 const development = !production
 
 if (tsNode) {
-  config.ormconfig.entities = ["src/app/entities/**.ts"]
+  config.ormconfig.entities = config.ormconfig.entities.map((e) =>
+    e.endsWith(".js") ? (e.substr(0, e.length - 3) + ".ts").replace("build/", "src/") : e
+  )
 }
 
 if (production) {

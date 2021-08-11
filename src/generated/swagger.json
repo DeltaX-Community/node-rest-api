@@ -517,7 +517,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/auth/current_session": {
+		"/auth/me": {
 			"get": {
 				"operationId": "GetUser",
 				"responses": {

@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import { agent as request } from "supertest"
 import { Paginate } from "../../app/dtos/paginate.dto"
-import { User } from "../../app/entities/user"
+import { User } from "../../app/entities"
 
 export function usersDescribe(app) {
   it("GET /api/v1/users", async () => {

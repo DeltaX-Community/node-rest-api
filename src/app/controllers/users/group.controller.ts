@@ -3,9 +3,7 @@ import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
 import { CreateGroupParams, UpdateGroupParams } from "../../dtos/group.dto"
 import { Paginate } from "../../dtos/paginate.dto"
 import { Equal, getManager, In } from "typeorm"
-import { Group } from "../../entities/group"
-import { Permission } from "../../entities/permission"
-import { User } from "../../entities/user"
+import { Group, User, Permission } from "../../entities"
 
 @Route("api/v1/users/groups")
 @Tags("Users")

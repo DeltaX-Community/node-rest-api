@@ -1,13 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Index,
-  ManyToMany
-} from "typeorm"
-import { Group } from "./group"
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { CreateDateColumn, UpdateDateColumn, Index, ManyToMany } from "typeorm"
+import { Group } from "./group.entity"
 
 @Entity({ name: "permissions" })
 export class Permission {

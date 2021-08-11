@@ -6,7 +6,7 @@
     {
         "type": "sqlite",
         "database": "data/db-v2.sqlite",
-        "entities": ["build/app/entities/**.js"],
+        "entities": ["build/app/entities/**.entity.js"],
         "logging": false,
         "synchronize": false
     }

@@ -1,16 +1,7 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  OneToMany,
-  JoinTable,
-  Index,
-  CreateDateColumn,
-  UpdateDateColumn
-} from "typeorm"
-import { Group } from "./group"
-import { Photo } from "./photo"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm"
+import { OneToMany, JoinTable, Index, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { Group } from "./group.entity"
+import { Photo } from "./photo.entity"
 import * as bcrypt from "bcrypt"
 
 @Entity({ name: "users" })

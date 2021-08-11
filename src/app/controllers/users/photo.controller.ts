@@ -1,7 +1,6 @@
 import { Controller, Get, Path, Post, Put, Request } from "tsoa"
 import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
-import { Photo } from "../../entities/photo"
-import { User } from "../../entities/user"
+import { Photo, User } from "../../entities"
 import { Paginate } from "../../dtos/paginate.dto"
 import { getManager, Equal } from "typeorm"
 import { CreatePhotoParams, UpdatePhotoParams } from "../../dtos/photo.dto"

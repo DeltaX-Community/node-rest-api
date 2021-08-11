@@ -1,7 +1,6 @@
-import { User } from "../entities/user"
+import { User, Permission } from "../entities"
 import { getManager, Equal } from "typeorm"
 import { UnauthorizedError } from "../errors/MessageError"
-import { Permission } from "../entities/permission"
 
 export interface IAuthData {
   id: number

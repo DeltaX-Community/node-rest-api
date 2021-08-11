@@ -1,6 +1,6 @@
 import { Controller, Get, Path, Delete, Post, Put } from "tsoa"
 import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
-import { Permission } from "../../entities/permission"
+import { Permission } from "../../entities"
 import { Paginate } from "../../dtos/paginate.dto"
 import { Equal, getManager } from "typeorm"
 import { CreatePermissionParams, UpdatePermissionParams } from "../../dtos/permission.dto"

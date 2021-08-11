@@ -1,11 +1,9 @@
 import { Body, Controller, Get, Path, Post, Put, Query } from "tsoa"
 import { Route, SuccessResponse, Security, Tags } from "tsoa"
-import { User } from "../../entities/user"
 import { CreateUserParams, UpdateUserParams } from "../../dtos/user.dto"
 import { Paginate } from "../../dtos/paginate.dto"
 import { Equal, getManager, In } from "typeorm"
-import { Photo } from "../../entities/photo"
-import { Group } from "../../entities/group"
+import { Photo, Group, User } from "../../entities"
 
 @Route("api/v1/users")
 @Tags("Users")

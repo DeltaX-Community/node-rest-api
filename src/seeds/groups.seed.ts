@@ -1,6 +1,5 @@
 import { Equal, In, EntityManager } from "typeorm"
-import { Group } from "../app/entities/group"
-import { Permission } from "../app/entities/permission"
+import { Group, Permission } from "../app/entities"
 import { permissions } from "./permissions.seed"
 
 const groups = [

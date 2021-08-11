@@ -1,6 +1,6 @@
-import { User } from "../entities/user"
-import { Profile } from "../entities/profile"
-import { Photo } from "../entities/photo"
+import { User } from "../entities"
+import { Profile } from "../entities"
+import { Photo } from "../entities"
 import { nameof } from "ts-simple-nameof"
 
 export interface ITables {

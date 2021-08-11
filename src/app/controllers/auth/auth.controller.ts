@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Route, Request, Security, Tags } from "tsoa"
-import { User } from "../../entities/user"
+import { User } from "../../entities"
 import { getManager } from "typeorm"
 import * as jwt from "jsonwebtoken"
 import { getUser, getUserById } from "../../auth/auth.service"
@@ -12,7 +12,7 @@ let refreshTokens: string[] = []
 @Route("auth")
 @Tags("Auth")
 export class AuthController extends Controller {
-  @Get("current_session")
+  @Get("me")
   @Security("jwt")
   public async getUser(@Request() req: { user: IAuthData }): Promise<User> {
     return getManager().findOneOrFail(User, req.user.id, {

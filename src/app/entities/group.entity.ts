@@ -1,15 +1,7 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Index,
-  JoinTable
-} from "typeorm"
-import { User } from "./user"
-import { Permission } from "./permission"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm"
+import { CreateDateColumn, UpdateDateColumn, Index, JoinTable } from "typeorm"
+import { User } from "./user.entity"
+import { Permission } from "./permission.entity"
 
 @Entity({ name: "groups" })
 export class Group {
