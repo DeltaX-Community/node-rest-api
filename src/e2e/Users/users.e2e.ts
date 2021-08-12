@@ -1,7 +1,6 @@
 import { expect } from "chai"
 import { agent as request } from "supertest"
-import { Paginate } from "../../app/dtos/paginate.dto"
-import { User } from "../../app/entities"
+import { paths } from "../../generated/schema"
 
 export function usersDescribe(app) {
   it("GET /api/v1/users", async () => {
@@ -18,9 +17,16 @@ export function usersDescribe(app) {
       .send()
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty
-    const result = res.body as Paginate<User>
+
+    type IUserGetResponse =
+      paths["/api/v1/users"]["get"]["responses"]["200"]["content"]["application/json"]
+    const result = res.body as IUserGetResponse
+
     expect(result.page).to.eq(2)
     expect(result.perPage).to.eq(1)
     expect(result.rows.length).to.eq(1)
+    expect(result.rows[0].username).not.to.be.empty
+    expect(result.rows[0].fullName).not.to.be.empty
+    // Fixme: Test all Row fields
   })
 }
