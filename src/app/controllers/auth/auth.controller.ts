@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Route, Request, Security, Tags } from "tsoa"
+import { Body, Controller, Get, Post, Route, Request, Security, Tags, Query } from "tsoa"
 import { Response, SuccessResponse } from "tsoa"
 import { Request as ExpReq } from "express"
 import { User } from "../../entities"
@@ -96,12 +96,12 @@ export class AuthController extends Controller {
     return { accessToken }
   }
 
-  @Post("logout")
+  @Get("logout")
   @Security("jwt")
   @SuccessResponse("200")
   @Response("401", "Success Logout and Unauthorized")
-  public logout(@Request() req: ExpReq, @Body() token: { refreshToken: string }): string {
-    refreshTokens = refreshTokens.filter((t) => t !== token.refreshToken)
+  public logout(@Request() req: ExpReq, @Query() refreshToken = "None"): string {
+    refreshTokens = refreshTokens.filter((t) => t !== refreshToken)
 
     // Force 401 and www-authenticate logout for clean credential on browser
     const authorization = req.headers["authorization"]

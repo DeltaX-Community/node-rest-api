@@ -17,7 +17,7 @@ export interface paths {
     post: operations["PostRefreshToken"];
   };
   "/auth/logout": {
-    post: operations["Logout"];
+    get: operations["Logout"];
   };
   "/api/v1/users/groups/{id}": {
     get: operations["GetGroup"];
@@ -254,7 +254,11 @@ export interface operations {
     };
   };
   Logout: {
-    parameters: {};
+    parameters: {
+      query: {
+        refreshToken?: string;
+      };
+    };
     responses: {
       200: {
         content: {
@@ -263,13 +267,6 @@ export interface operations {
       };
       /** Success Logout and Unauthorized */
       401: unknown;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          refreshToken: string;
-        };
-      };
     };
   };
   GetGroup: {

@@ -696,7 +696,7 @@
 			}
 		},
 		"/auth/logout": {
-			"post": {
+			"get": {
 				"operationId": "Logout",
 				"responses": {
 					"200": {
@@ -721,25 +721,17 @@
 						"jwt": []
 					}
 				],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"properties": {
-									"refreshToken": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"refreshToken"
-								],
-								"type": "object"
-							}
+				"parameters": [
+					{
+						"in": "query",
+						"name": "refreshToken",
+						"required": false,
+						"schema": {
+							"default": "None",
+							"type": "string"
 						}
 					}
-				}
+				]
 			}
 		},
 		"/api/v1/users/groups/{id}": {

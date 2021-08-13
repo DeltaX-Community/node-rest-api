@@ -36,13 +36,13 @@ export class UsersController extends Controller {
       // Overwrite Groups
       if (item.groups) {
         user.groups = await trx.find(Group, {
-          where: { name: In(item.groups.filter((r) => r.name)) }
+          where: { name: In(item.groups.map((r) => r.name)) }
         })
       }
       // Overwrite Photos
       if (item.photos) {
         user.photos = await trx.find(Photo, {
-          where: { url: In(item.photos.filter((p) => p.url)) }
+          where: { url: In(item.photos.map((p) => p.url)) }
         })
       }
       return trx.save<User>(user)

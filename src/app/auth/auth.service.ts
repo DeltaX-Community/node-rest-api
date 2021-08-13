@@ -95,7 +95,7 @@ export function validatePermissions(
   if (username && user.username == username) {
     return true
   }
-  if (scopes) {
+  if (scopes && scopes.length > 0) {
     const hasScope = scopes.find((s) => user.permissions?.includes(s) || user.groups?.includes(s))
     return !!hasScope
   }
