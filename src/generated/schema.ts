@@ -48,6 +48,7 @@ export interface paths {
   "/api/v1/users/{id}": {
     get: operations["GetUser"];
     put: operations["UpdateUser"];
+    delete: operations["DeleteUser"];
   };
   "/api/v1/users": {
     get: operations["ListUsers"];
@@ -255,17 +256,18 @@ export interface operations {
   Logout: {
     parameters: {};
     responses: {
-      /** Ok */
       200: {
         content: {
           "application/json": string;
         };
       };
+      /** Success Logout and Unauthorized */
+      401: unknown;
     };
     requestBody: {
       content: {
         "application/json": {
-          token: string;
+          refreshToken: string;
         };
       };
     };
@@ -528,6 +530,23 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UpdateUserParams"];
+      };
+    };
+  };
+  DeleteUser: {
+    parameters: {
+      path: {
+        id: number;
+      };
+    };
+    responses: {
+      /** Ok */
+      200: {
+        content: {
+          "application/json": {
+            affected: number;
+          };
+        };
       };
     };
   };

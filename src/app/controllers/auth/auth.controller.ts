@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Post, Route, Request, Security, Tags } from "tsoa"
+import { Response, SuccessResponse } from "tsoa"
+import { Request as ExpReq } from "express"
 import { User } from "../../entities"
 import { getManager } from "typeorm"
 import * as jwt from "jsonwebtoken"
@@ -31,12 +33,7 @@ export class AuthController extends Controller {
       expiresIn: "20m"
     })
 
-    const refreshToken = jwt.sign(
-      {
-        id: user.id
-      },
-      config.refreshTokenSecret
-    )
+    const refreshToken = jwt.sign({ id: user.id }, config.refreshTokenSecret)
 
     refreshTokens.push(refreshToken)
 
@@ -101,8 +98,20 @@ export class AuthController extends Controller {
 
   @Post("logout")
   @Security("jwt")
-  public logout(@Body() refreshToken: { token: string }): string {
-    refreshTokens = refreshTokens.filter((t) => t !== refreshToken.token)
+  @SuccessResponse("200")
+  @Response("401", "Success Logout and Unauthorized")
+  public logout(@Request() req: ExpReq, @Body() token: { refreshToken: string }): string {
+    refreshTokens = refreshTokens.filter((t) => t !== token.refreshToken)
+
+    // Force 401 and www-authenticate logout for clean credential on browser
+    const authorization = req.headers["authorization"]
+    if (authorization && authorization.startsWith("Basic ")) {
+      this.setStatus(401)
+      this.setHeader(
+        "WWW-Authenticate",
+        'Basic realm="Access to the staging site", charset="UTF-8"'
+      )
+    }
     return "Ok"
   }
 }

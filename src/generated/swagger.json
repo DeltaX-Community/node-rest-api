@@ -700,7 +700,7 @@
 				"operationId": "Logout",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -708,6 +708,9 @@
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "Success Logout and Unauthorized"
 					}
 				},
 				"tags": [
@@ -725,12 +728,12 @@
 						"application/json": {
 							"schema": {
 								"properties": {
-									"token": {
+									"refreshToken": {
 										"type": "string"
 									}
 								},
 								"required": [
-									"token"
+									"refreshToken"
 								],
 								"type": "object"
 							}
@@ -1427,11 +1430,7 @@
 				"security": [
 					{
 						"jwt": [
-							"userAdmin"
-						]
-					},
-					{
-						"jwt": [
+							"userAdmin",
 							"users:update"
 						]
 					}
@@ -1457,6 +1456,52 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"affected": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"affected"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"jwt": [
+							"userAdmin",
+							"users:delete"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/api/v1/users": {
@@ -1479,7 +1524,10 @@
 				],
 				"security": [
 					{
-						"jwt": []
+						"jwt": [
+							"userAdmin",
+							"users:read"
+						]
 					}
 				],
 				"parameters": [
@@ -1534,11 +1582,7 @@
 				"security": [
 					{
 						"jwt": [
-							"userAdmin"
-						]
-					},
-					{
-						"jwt": [
+							"userAdmin",
 							"users:create"
 						]
 					}

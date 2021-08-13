@@ -1,55 +1,8 @@
 import * as express from "express"
 import * as jwt from "jsonwebtoken"
-import { getUser, IAuthData } from "./auth.service"
+import { getUser, IAuthData, validatePermissions } from "./auth.service"
 import { ForbiddenError, UnauthorizedError } from "../errors/MessageError"
 import { config } from "../../config"
-
-/**
- * Valida permisos de usuario.
- *
- * Se usa scope para validar permisos
- * Rechaza si el scope solicita un permiso no incluido en permissions o en groups
- *
- * si pertenece al grupo admin'
- *
- * Se asume que los nombres cargados en Groups son distintos a Permission.
- *
- * Group:
- *      Administrator
- *      Editor
- *      Viewer
- *      etc.
- *
- * Permission:
- *      user:create
- *      user:edit
- *      user:view
- *      tableXYZ:update
- *      etc
- *
- * @param user
- * @param scopes
- */
-export function validatePermissions(
-  user: IAuthData,
-  scopes?: string[],
-  username: string | null = null
-): boolean {
-  if (user.groups?.includes("admin")) {
-    return true
-  }
-  if (username && user.username == username) {
-    return true
-  }
-  if (scopes) {
-    for (const scope of scopes) {
-      if (!user.permissions?.includes(scope) && !user.groups?.includes(scope)) {
-        return false
-      }
-    }
-  }
-  return !!user
-}
 
 export async function expressAuthentication(
   request: express.Request,

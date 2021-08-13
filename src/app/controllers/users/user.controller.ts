@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Path, Post, Put, Query } from "tsoa"
+import { Body, Controller, Get, Path, Post, Put, Query, Delete } from "tsoa"
 import { Route, SuccessResponse, Security, Tags } from "tsoa"
 import { CreateUserParams, UpdateUserParams } from "../../dtos/user.dto"
 import { Paginate } from "../../dtos/paginate.dto"
@@ -15,8 +15,7 @@ export class UsersController extends Controller {
   }
 
   @Put("{id}")
-  @Security("jwt", ["userAdmin"])
-  @Security("jwt", ["users:update"])
+  @Security("jwt", ["userAdmin", "users:update"])
   public async updateUser(@Path() id: number, @Body() item: UpdateUserParams): Promise<User> {
     return await getManager().transaction(async (trx) => {
       const user = await trx.findOneOrFail(User, id, { relations: ["groups", "photos"] })
@@ -51,7 +50,7 @@ export class UsersController extends Controller {
   }
 
   @Get("")
-  @Security("jwt")
+  @Security("jwt", ["userAdmin", "users:read"])
   public async listUsers(
     @Query() page = 1,
     @Query() perPage = 10,
@@ -73,12 +72,19 @@ export class UsersController extends Controller {
 
   @SuccessResponse("201", "Created")
   @Post()
-  @Security("jwt", ["userAdmin"])
-  @Security("jwt", ["users:create"])
+  @Security("jwt", ["userAdmin", "users:create"])
   public async createUser(@Body() requestBody: CreateUserParams): Promise<User> {
     return await getManager().transaction(async (trx) => {
       const user = trx.create(User, requestBody)
       return trx.save<User>(user)
     })
+  }
+
+  @Delete("{id}")
+  @Security("jwt", ["userAdmin", "users:delete"])
+  public async deleteUser(@Path() id: number): Promise<{ affected: number }> {
+    await getManager().findOneOrFail(User, id)
+    const result = await getManager().delete(User, id)
+    return { affected: result.affected || 0 }
   }
 }

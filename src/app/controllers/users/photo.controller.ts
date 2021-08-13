@@ -5,8 +5,7 @@ import { Paginate } from "../../dtos/paginate.dto"
 import { getManager, Equal } from "typeorm"
 import { CreatePhotoParams, UpdatePhotoParams } from "../../dtos/photo.dto"
 import { ForbiddenError } from "../../../app/errors/MessageError"
-import { validatePermissions } from "../../../app/auth/authentication"
-import { IAuthData } from "src/app/auth/auth.service"
+import { IAuthData, validatePermissions } from "../../../app/auth/auth.service"
 
 @Route("api/v1/users/photos")
 @Tags("Users")

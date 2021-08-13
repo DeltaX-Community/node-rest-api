@@ -311,7 +311,8 @@ export function RegisterRoutes(app: express.Router) {
 
             function AuthController_logout(request: any, response: any, next: any) {
             const args = {
-                    refreshToken: {"in":"body","name":"refreshToken","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"token":{"dataType":"string","required":true}}},
+                    req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                    token: {"in":"body","name":"token","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"refreshToken":{"dataType":"string","required":true}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -703,7 +704,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.put('/api/v1/users/:id',
-            authenticateMiddleware([{"jwt":["userAdmin"]},{"jwt":["users:update"]}]),
+            authenticateMiddleware([{"jwt":["userAdmin","users:update"]}]),
 
             function UsersController_updateUser(request: any, response: any, next: any) {
             const args = {
@@ -728,7 +729,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/v1/users',
-            authenticateMiddleware([{"jwt":[]}]),
+            authenticateMiddleware([{"jwt":["userAdmin","users:read"]}]),
 
             function UsersController_listUsers(request: any, response: any, next: any) {
             const args = {
@@ -754,7 +755,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/v1/users',
-            authenticateMiddleware([{"jwt":["userAdmin"]},{"jwt":["users:create"]}]),
+            authenticateMiddleware([{"jwt":["userAdmin","users:create"]}]),
 
             function UsersController_createUser(request: any, response: any, next: any) {
             const args = {
@@ -774,6 +775,30 @@ export function RegisterRoutes(app: express.Router) {
 
 
             const promise = controller.createUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/api/v1/users/:id',
+            authenticateMiddleware([{"jwt":["userAdmin","users:delete"]}]),
+
+            function UsersController_deleteUser(request: any, response: any, next: any) {
+            const args = {
+                    id: {"in":"path","name":"id","required":true,"dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.deleteUser.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

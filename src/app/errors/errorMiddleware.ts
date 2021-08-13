@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Router, Request, Response, NextFunction } from "express"
 import { ValidateError } from "@tsoa/runtime"
-import { MessageError } from "./MessageError"
+import { MessageError, UnauthorizedError } from "./MessageError"
 import { JsonWebTokenError } from "jsonwebtoken"
 
 export function registerErrorMiddleware(app: Router) {
@@ -13,21 +11,26 @@ export function registerErrorMiddleware(app: Router) {
     next: NextFunction
   ): Response | void {
     if (err instanceof ValidateError) {
-      console.warn(`Caught Validation Error for ${req.path}:`, err.fields)
       return res.status(422).json({
         message: "Validation Failed",
         details: err?.fields
       })
     }
+    if (err instanceof UnauthorizedError) {
+      return res
+        .status(err.status)
+        .setHeader("WWW-Authenticate", 'Basic realm="Access to the staging site", charset="UTF-8"')
+        .json(err)
+    }
     if (err instanceof MessageError) {
       return res.status(err.status || 500).json(err)
     }
     if (err instanceof JsonWebTokenError) {
-      const st = (err as any)?.status
+      const st = (err as unknown as { status: number })?.status
       return res.status(st || 500).json(err)
     }
     if (err instanceof Error) {
-      const st = (err as any)?.status
+      const st = (err as unknown as { status: number })?.status
       return res.status(st >= 400 ? st : 500).json({
         message: "Internal Server Error",
         error: `${err}`
