@@ -248,7 +248,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          token: string;
+          refreshToken: string;
         };
       };
     };

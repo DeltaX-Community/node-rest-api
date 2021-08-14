@@ -681,12 +681,12 @@
 						"application/json": {
 							"schema": {
 								"properties": {
-									"token": {
+									"refreshToken": {
 										"type": "string"
 									}
 								},
 								"required": [
-									"token"
+									"refreshToken"
 								],
 								"type": "object"
 							}

@@ -287,7 +287,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function AuthController_postRefreshToken(request: any, response: any, next: any) {
             const args = {
-                    refreshToken: {"in":"body","name":"refreshToken","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"token":{"dataType":"string","required":true}}},
+                    token: {"in":"body","name":"token","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"refreshToken":{"dataType":"string","required":true}}},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

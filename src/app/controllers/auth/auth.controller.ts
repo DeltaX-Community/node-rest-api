@@ -64,24 +64,24 @@ export class AuthController extends Controller {
       throw new UnauthorizedError("Old password are invalid!")
     }
 
-    user?.setPassword(pass.newpassword)
+    user.setPassword(pass.newpassword)
     return await manager.save(user)
   }
 
   @Post("refresh_token")
   public async postRefreshToken(
-    @Body() refreshToken: { token: string }
+    @Body() token: { refreshToken: string }
   ): Promise<{ accessToken: string }> {
-    console.log(refreshToken?.token)
-    if (!refreshToken?.token) {
+    console.log(token?.refreshToken)
+    if (!token?.refreshToken) {
       throw new UnauthorizedError("Token required!")
     }
 
-    if (!refreshTokens.includes(refreshToken.token)) {
+    if (!refreshTokens.includes(token.refreshToken)) {
       throw new ForbiddenError("Invalid Token!")
     }
 
-    const decoded = jwt.verify(refreshToken.token, config.refreshTokenSecret, {
+    const decoded = jwt.verify(token.refreshToken, config.refreshTokenSecret, {
       complete: true
     }) as unknown as { payload: IAuthData }
     const userId = decoded.payload?.id

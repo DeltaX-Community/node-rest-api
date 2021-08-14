@@ -13,13 +13,13 @@ export class MessageError {
 }
 
 export class UnauthorizedError extends MessageError {
-  constructor(message: string, name = "") {
-    super("ERROR", name || "Unauthorized", message, 401)
+  constructor(message: string) {
+    super("ERROR", "Unauthorized", message, 401)
   }
 }
 
 export class ForbiddenError extends MessageError {
-  constructor(message: string, name = "") {
-    super("ERROR", name || "Forbidden", message, 403)
+  constructor(message: string) {
+    super("ERROR", "Forbidden", message, 403)
   }
 }
