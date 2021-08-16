@@ -1,20 +1,10 @@
-import configDev from "./config.development.json"
-import configProd from "./config.production.json"
+const ENV = process.env.ENV || "development"
+const PORT = process.env.PORT || 3000
+const DATABASE_URL = process.env.DATABASE_URL || "file:./dev.sqlite"
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "somerandomaccesstoken"
+const REFRESH_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "somerandomstringforrefreshtoken"
+const isProduction = ENV == "production"
 
-let config = { ...configDev }
-const env = process.env.NODE_ENV || "development"
-const tsNode = !!process.env.TS_NODE
-const production = env == "production"
-const development = !production
-
-if (tsNode) {
-  config.ormconfig.entities = config.ormconfig.entities.map((e) =>
-    e.endsWith(".js") ? (e.substr(0, e.length - 3) + ".ts").replace("build/", "src/") : e
-  )
-}
-
-if (production) {
-  config = { ...configProd }
-}
-
-export { config, tsNode, production, development }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+console.log({ ENV, PORT, DATABASE_URL, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, isProduction })
+export { ENV, PORT, DATABASE_URL, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, isProduction }

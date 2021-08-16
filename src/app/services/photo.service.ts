@@ -40,24 +40,27 @@ class PhotoService {
   async getPhotoList(page = 1, perPage = 10, username: string | null = null): Promise<IPhotoList> {
     const skip = perPage * (page - 1)
 
-    const photos = await prisma.photo.findMany({
-      skip: skip,
-      take: perPage,
-      where: {
-        user: {
-          username: username || undefined
-        }
-      }
-    })
+    const rowsAndCount = await prisma.$transaction([
+      prisma.photo.findMany({
+        skip: skip,
+        take: perPage,
+        where: { user: { username: username || undefined } }
+      }),
+      prisma.photo.count({ where: { user: { username: username || undefined } } })
+    ])
 
-    return createPhotoList(photos, page, perPage, 0)
+    return createPhotoList(rowsAndCount[0], page, perPage, rowsAndCount[1])
   }
 
-  async createPhoto(userId: number, data: CreatePhotoParams): Promise<Photo> {
+  async createPhoto(data: CreatePhotoParams): Promise<Photo> {
     return await prisma.photo.create({
       data: {
         url: data.url,
-        userId: userId
+        user: {
+          connect: {
+            username: data.username
+          }
+        }
       }
     })
   }

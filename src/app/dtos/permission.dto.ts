@@ -22,7 +22,7 @@ export function createPermissionList(
   total: number
 ): IPermissionList {
   const rows = permissions.map((p) => {
-    return { ...p, passwordHash: undefined } as unknown as Permission
+    return { ...p } as unknown as Permission
   })
 
   return { rows, page, perPage, total }

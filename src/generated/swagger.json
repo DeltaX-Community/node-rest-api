@@ -1126,7 +1126,7 @@
 		},
 		"/api/v1/users/permissions": {
 			"get": {
-				"operationId": "ListPermissions",
+				"operationId": "GetPermissionList",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -1309,7 +1309,7 @@
 		},
 		"/api/v1/users/photos": {
 			"get": {
-				"operationId": "GetList",
+				"operationId": "GetPhotoList",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -1363,7 +1363,7 @@
 				]
 			},
 			"post": {
-				"operationId": "CreateItem",
+				"operationId": "CreatePhoto",
 				"responses": {
 					"201": {
 						"description": "Created",
@@ -1399,7 +1399,7 @@
 		},
 		"/api/v1/users/{id}": {
 			"get": {
-				"operationId": "GetUser",
+				"operationId": "GetUserDetail",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -1519,7 +1519,7 @@
 		},
 		"/api/v1/users": {
 			"get": {
-				"operationId": "ListUsers",
+				"operationId": "GetUserList",
 				"responses": {
 					"200": {
 						"description": "Ok",

@@ -43,26 +43,27 @@ class PermissionService {
   ): Promise<IPermissionList> {
     const skip = perPage * (page - 1)
 
-    const permissions = await prisma.permission.findMany({
-      skip: skip,
-      take: perPage,
-      where: {
-        isActive: isActive,
-        groups: {
-          every: {
-            userGroups: {
-              every: {
-                user: {
-                  username: username || undefined
-                }
+    const where = {
+      isActive: isActive,
+      groups: {
+        some: {
+          userGroups: {
+            some: {
+              user: {
+                username: username || undefined
               }
             }
           }
         }
       }
-    })
+    }
 
-    return createPermissionList(permissions, page, perPage, 0)
+    const rowsAndCount = await prisma.$transaction([
+      prisma.permission.findMany({ skip: skip, take: perPage, where }),
+      prisma.permission.count({ where })
+    ])
+
+    return createPermissionList(rowsAndCount[0], page, perPage, rowsAndCount[1])
   }
 
   async createPermission(data: CreatePermissionParams): Promise<Permission> {

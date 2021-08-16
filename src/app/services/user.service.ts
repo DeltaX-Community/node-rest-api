@@ -93,18 +93,19 @@ class UserService {
     return createUserDetail(user, photos, groups, permissions)
   }
 
-  async listUsers(page = 1, perPage = 10, isActive = true): Promise<IUserList> {
+  async getUserList(page = 1, perPage = 10, isActive = true): Promise<IUserList> {
     const skip = perPage * (page - 1)
 
-    const users = await prisma.user.findMany({
-      skip: skip,
-      take: perPage,
-      where: {
-        isActive: isActive
-      }
-    })
+    const rowsAndCount = await prisma.$transaction([
+      prisma.user.findMany({
+        skip: skip,
+        take: perPage,
+        where: { isActive: isActive }
+      }),
+      prisma.user.count({ where: { isActive: isActive } })
+    ])
 
-    return createUserLists(users, page, perPage, 0)
+    return createUserLists(rowsAndCount[0], page, perPage, rowsAndCount[1])
   }
 
   async createUser(data: CreateUserParams): Promise<User> {

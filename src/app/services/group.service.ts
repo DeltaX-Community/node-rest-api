@@ -71,15 +71,16 @@ class GroupService {
   async getGroupList(page = 1, perPage = 10, isActive = true): Promise<IGroupList> {
     const skip = perPage * (page - 1)
 
-    const groups = await prisma.group.findMany({
-      skip: skip,
-      take: perPage,
-      where: {
-        isActive: isActive
-      }
-    })
+    const rowsAndCount = await prisma.$transaction([
+      prisma.group.findMany({
+        skip: skip,
+        take: perPage,
+        where: { isActive: isActive }
+      }),
+      prisma.group.count({ where: { isActive: isActive } })
+    ])
 
-    return createGroupList(groups, page, perPage, 0)
+    return createGroupList(rowsAndCount[0], page, perPage, rowsAndCount[1])
   }
 
   async createGroup(data: CreateGroupParams): Promise<Group> {

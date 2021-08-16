@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express"
 import { ValidateError } from "@tsoa/runtime"
 import { MessageError, UnauthorizedError } from "./MessageError"
 import { JsonWebTokenError } from "jsonwebtoken"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 
 export function registerErrorMiddleware(app: Router) {
   app.use(function errorHandler(
@@ -29,7 +30,14 @@ export function registerErrorMiddleware(app: Router) {
       const st = (err as unknown as { status: number })?.status
       return res.status(st || 500).json(err)
     }
+    if (err instanceof PrismaClientKnownRequestError) {
+      return res.status(500).json({
+        message: err.name,
+        error: (err.meta as { cause: string })?.cause || err.message
+      })
+    }
     if (err instanceof Error) {
+      console.log(err)
       const st = (err as unknown as { status: number })?.status
       return res.status(st >= 400 ? st : 500).json({
         message: "Internal Server Error",

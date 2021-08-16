@@ -32,7 +32,7 @@ export class PhotoController extends Controller {
 
   @Get("")
   @Security("jwt")
-  public async getList(
+  public async getPhotoList(
     @Query() page = 1,
     @Query() perPage = 10,
     @Query() username: string | null = null
@@ -43,7 +43,7 @@ export class PhotoController extends Controller {
   @SuccessResponse("201", "Created")
   @Post()
   @Security("jwt")
-  public async createItem(
+  public async createPhoto(
     @Request() req: { user: IAuthData },
     @Body() item: CreatePhotoParams
   ): Promise<Photo> {
@@ -52,6 +52,6 @@ export class PhotoController extends Controller {
     }
 
     this.setStatus(201)
-    return await photoService.createPhoto(req.user.id, item)
+    return await photoService.createPhoto(item)
   }
 }

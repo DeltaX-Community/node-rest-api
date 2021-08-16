@@ -9,7 +9,7 @@ import { userService } from "../../services"
 export class UsersController extends Controller {
   @Get("{id}")
   @Security("jwt")
-  public getUser(@Path() id: number): Promise<IUserDetail> {
+  public getUserDetail(@Path() id: number): Promise<IUserDetail> {
     return userService.getUserDetail(id)
   }
 
@@ -24,12 +24,12 @@ export class UsersController extends Controller {
 
   @Get("")
   @Security("jwt", ["userAdmin", "users:read"])
-  public async listUsers(
+  public async getUserList(
     @Query() page = 1,
     @Query() perPage = 10,
     @Query() isActive = true
   ): Promise<IUserList> {
-    return userService.listUsers(page, perPage, isActive)
+    return userService.getUserList(page, perPage, isActive)
   }
 
   @SuccessResponse("201", "Created")

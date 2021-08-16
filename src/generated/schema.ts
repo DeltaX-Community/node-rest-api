@@ -34,7 +34,7 @@ export interface paths {
     delete: operations["DeletePermission"];
   };
   "/api/v1/users/permissions": {
-    get: operations["ListPermissions"];
+    get: operations["GetPermissionList"];
     post: operations["CreatePermission"];
   };
   "/api/v1/users/photos/{id}": {
@@ -42,16 +42,16 @@ export interface paths {
     put: operations["UpdatePhoto"];
   };
   "/api/v1/users/photos": {
-    get: operations["GetList"];
-    post: operations["CreateItem"];
+    get: operations["GetPhotoList"];
+    post: operations["CreatePhoto"];
   };
   "/api/v1/users/{id}": {
-    get: operations["GetUser"];
+    get: operations["GetUserDetail"];
     put: operations["UpdateUser"];
     delete: operations["DeleteUser"];
   };
   "/api/v1/users": {
-    get: operations["ListUsers"];
+    get: operations["GetUserList"];
     post: operations["CreateUser"];
   };
 }
@@ -194,11 +194,7 @@ export interface components {
 
 export interface operations {
   GetUser: {
-    parameters: {
-      path: {
-        id: number;
-      };
-    };
+    parameters: {};
     responses: {
       /** Ok */
       200: {
@@ -418,7 +414,7 @@ export interface operations {
       };
     };
   };
-  ListPermissions: {
+  GetPermissionList: {
     parameters: {
       query: {
         page?: number;
@@ -487,7 +483,7 @@ export interface operations {
       };
     };
   };
-  GetList: {
+  GetPhotoList: {
     parameters: {
       query: {
         page?: number;
@@ -504,7 +500,7 @@ export interface operations {
       };
     };
   };
-  CreateItem: {
+  CreatePhoto: {
     parameters: {};
     responses: {
       /** Created */
@@ -517,6 +513,21 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["CreatePhotoParams"];
+      };
+    };
+  };
+  GetUserDetail: {
+    parameters: {
+      path: {
+        id: number;
+      };
+    };
+    responses: {
+      /** Ok */
+      200: {
+        content: {
+          "application/json": components["schemas"]["IUserDetail"];
+        };
       };
     };
   };
@@ -555,7 +566,7 @@ export interface operations {
       };
     };
   };
-  ListUsers: {
+  GetUserList: {
     parameters: {
       query: {
         page?: number;

@@ -29,7 +29,7 @@ export class PermissionController extends Controller {
 
   @Get("")
   @Security("jwt", ["permissions:read"])
-  public async listPermissions(
+  public async getPermissionList(
     @Query() page = 1,
     @Query() perPage = 10,
     @Query() username: string | null = null,

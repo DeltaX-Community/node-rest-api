@@ -2,7 +2,7 @@ import * as express from "express"
 import * as jwt from "jsonwebtoken"
 import { IAuthData, authService } from "../services/auth.service"
 import { ForbiddenError, UnauthorizedError } from "../errors/MessageError"
-import { config } from "../../config"
+import { ACCESS_TOKEN_SECRET } from "../../config"
 
 export async function expressAuthentication(
   request: express.Request,
@@ -34,7 +34,7 @@ export async function expressAuthentication(
   }
 
   if (token) {
-    const decoded = jwt.verify(token, config.accessTokenSecret, {
+    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET, {
       complete: true
     }) as { payload: unknown }
 

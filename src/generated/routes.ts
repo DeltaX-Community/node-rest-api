@@ -506,7 +506,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/v1/users/permissions',
             authenticateMiddleware([{"jwt":["permissions:read"]}]),
 
-            function PermissionController_listPermissions(request: any, response: any, next: any) {
+            function PermissionController_getPermissionList(request: any, response: any, next: any) {
             const args = {
                     page: {"default":1,"in":"query","name":"page","dataType":"double"},
                     perPage: {"default":10,"in":"query","name":"perPage","dataType":"double"},
@@ -526,7 +526,7 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new PermissionController();
 
 
-            const promise = controller.listPermissions.apply(controller, validatedArgs as any);
+            const promise = controller.getPermissionList.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -631,7 +631,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/v1/users/photos',
             authenticateMiddleware([{"jwt":[]}]),
 
-            function PhotoController_getList(request: any, response: any, next: any) {
+            function PhotoController_getPhotoList(request: any, response: any, next: any) {
             const args = {
                     page: {"default":1,"in":"query","name":"page","dataType":"double"},
                     perPage: {"default":10,"in":"query","name":"perPage","dataType":"double"},
@@ -650,14 +650,14 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new PhotoController();
 
 
-            const promise = controller.getList.apply(controller, validatedArgs as any);
+            const promise = controller.getPhotoList.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/v1/users/photos',
             authenticateMiddleware([{"jwt":[]}]),
 
-            function PhotoController_createItem(request: any, response: any, next: any) {
+            function PhotoController_createPhoto(request: any, response: any, next: any) {
             const args = {
                     req: {"in":"request","name":"req","required":true,"dataType":"object"},
                     item: {"in":"body","name":"item","required":true,"ref":"CreatePhotoParams"},
@@ -675,14 +675,14 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new PhotoController();
 
 
-            const promise = controller.createItem.apply(controller, validatedArgs as any);
+            const promise = controller.createPhoto.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/v1/users/:id',
             authenticateMiddleware([{"jwt":[]}]),
 
-            function UsersController_getUser(request: any, response: any, next: any) {
+            function UsersController_getUserDetail(request: any, response: any, next: any) {
             const args = {
                     id: {"in":"path","name":"id","required":true,"dataType":"double"},
             };
@@ -699,7 +699,7 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new UsersController();
 
 
-            const promise = controller.getUser.apply(controller, validatedArgs as any);
+            const promise = controller.getUserDetail.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -731,7 +731,7 @@ export function RegisterRoutes(app: express.Router) {
         app.get('/api/v1/users',
             authenticateMiddleware([{"jwt":["userAdmin","users:read"]}]),
 
-            function UsersController_listUsers(request: any, response: any, next: any) {
+            function UsersController_getUserList(request: any, response: any, next: any) {
             const args = {
                     page: {"default":1,"in":"query","name":"page","dataType":"double"},
                     perPage: {"default":10,"in":"query","name":"perPage","dataType":"double"},
@@ -750,7 +750,7 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new UsersController();
 
 
-            const promise = controller.listUsers.apply(controller, validatedArgs as any);
+            const promise = controller.getUserList.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
