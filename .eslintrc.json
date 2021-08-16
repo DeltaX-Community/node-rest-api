@@ -19,6 +19,7 @@
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
     "linebreak-style": ["error", "unix"], 
     "no-use-before-define": "error",
     "prefer-const": "error",

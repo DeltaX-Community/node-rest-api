@@ -8,181 +8,211 @@
 		"schemas": {
 			"User": {
 				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
+					"isActive": {
+						"type": "boolean"
 					},
-					"username": {
-						"type": "string"
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"passwordHash": {
+						"type": "string",
+						"nullable": true
+					},
+					"email": {
+						"type": "string",
+						"nullable": true
 					},
 					"fullName": {
 						"type": "string"
 					},
-					"email": {
+					"username": {
 						"type": "string"
 					},
-					"passwordHash": {
-						"type": "string"
-					},
-					"groups": {
-						"items": {
-							"$ref": "#/components/schemas/Group"
-						},
-						"type": "array"
-					},
-					"photos": {
-						"items": {
-							"$ref": "#/components/schemas/Photo"
-						},
-						"type": "array"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"createAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"isActive": {
-						"type": "boolean"
+					"id": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
-					"id",
-					"username",
-					"fullName",
-					"email",
+					"isActive",
+					"createAt",
+					"updatedAt",
 					"passwordHash",
-					"groups",
-					"photos",
-					"updatedAt",
-					"createAt",
-					"isActive"
+					"email",
+					"fullName",
+					"username",
+					"id"
 				],
 				"type": "object",
-				"additionalProperties": false
-			},
-			"Group": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"name": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string"
-					},
-					"users": {
-						"items": {
-							"$ref": "#/components/schemas/User"
-						},
-						"type": "array"
-					},
-					"permissions": {
-						"items": {
-							"$ref": "#/components/schemas/Permission"
-						},
-						"type": "array"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"createAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"isActive": {
-						"type": "boolean"
-					}
-				},
-				"required": [
-					"id",
-					"name",
-					"description",
-					"users",
-					"permissions",
-					"updatedAt",
-					"createAt",
-					"isActive"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"Permission": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"name": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string"
-					},
-					"groups": {
-						"items": {
-							"$ref": "#/components/schemas/Group"
-						},
-						"type": "array"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"createAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"isActive": {
-						"type": "boolean"
-					}
-				},
-				"required": [
-					"id",
-					"name",
-					"description",
-					"groups",
-					"updatedAt",
-					"createAt",
-					"isActive"
-				],
-				"type": "object",
-				"additionalProperties": false
+				"description": "Model User"
 			},
 			"Photo": {
 				"properties": {
-					"id": {
+					"isActive": {
+						"type": "boolean"
+					},
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"userId": {
 						"type": "number",
 						"format": "double"
-					},
-					"user": {
-						"$ref": "#/components/schemas/User"
 					},
 					"url": {
 						"type": "string"
 					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"isActive",
+					"createAt",
+					"updatedAt",
+					"userId",
+					"url",
+					"id"
+				],
+				"type": "object",
+				"description": "Model Photo"
+			},
+			"Group": {
+				"properties": {
+					"isActive": {
+						"type": "boolean"
+					},
 					"createAt": {
 						"type": "string",
 						"format": "date-time"
 					},
-					"isActive": {
-						"type": "boolean"
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"description": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
-					"id",
-					"user",
-					"url",
+					"isActive",
 					"createAt",
-					"isActive"
+					"updatedAt",
+					"description",
+					"name",
+					"id"
 				],
 				"type": "object",
-				"additionalProperties": false
+				"description": "Model Group"
+			},
+			"IUserDetail": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/User"
+					},
+					{
+						"properties": {
+							"permissions": {
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							"groups": {
+								"items": {
+									"$ref": "#/components/schemas/Group"
+								},
+								"type": "array"
+							},
+							"photos": {
+								"items": {
+									"$ref": "#/components/schemas/Photo"
+								},
+								"type": "array"
+							}
+						},
+						"required": [
+							"permissions",
+							"groups",
+							"photos"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"Permission": {
+				"properties": {
+					"isActive": {
+						"type": "boolean"
+					},
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"isActive",
+					"createAt",
+					"updatedAt",
+					"description",
+					"name",
+					"id"
+				],
+				"type": "object",
+				"description": "Model Permission"
+			},
+			"IGroupDetail": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/Group"
+					},
+					{
+						"properties": {
+							"permissions": {
+								"items": {
+									"$ref": "#/components/schemas/Permission"
+								},
+								"type": "array"
+							}
+						},
+						"required": [
+							"permissions"
+						],
+						"type": "object"
+					}
+				]
 			},
 			"UpdateGroupParams": {
 				"properties": {
@@ -201,20 +231,6 @@
 							},
 							"required": [
 								"name"
-							],
-							"type": "object"
-						},
-						"type": "array"
-					},
-					"users": {
-						"items": {
-							"properties": {
-								"username": {
-									"type": "string"
-								}
-							},
-							"required": [
-								"username"
 							],
 							"type": "object"
 						},
@@ -254,6 +270,9 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IGroupList": {
+				"$ref": "#/components/schemas/Paginate_Group_"
+			},
 			"CreateGroupParams": {
 				"properties": {
 					"name": {
@@ -283,6 +302,9 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"IPermissionDetail": {
+				"$ref": "#/components/schemas/Permission"
 			},
 			"UpdatePermissionParams": {
 				"properties": {
@@ -326,6 +348,9 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IPermissionList": {
+				"$ref": "#/components/schemas/Paginate_Permission_"
+			},
 			"CreatePermissionParams": {
 				"properties": {
 					"name": {
@@ -340,6 +365,37 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"IPhotoDetail": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/Photo"
+					},
+					{
+						"properties": {
+							"user": {
+								"properties": {
+									"username": {
+										"type": "string"
+									},
+									"id": {
+										"type": "number",
+										"format": "double"
+									}
+								},
+								"required": [
+									"username",
+									"id"
+								],
+								"type": "object"
+							}
+						},
+						"required": [
+							"user"
+						],
+						"type": "object"
+					}
+				]
 			},
 			"UpdatePhotoParams": {
 				"properties": {
@@ -382,6 +438,9 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"IPhotoList": {
+				"$ref": "#/components/schemas/Paginate_Photo_"
 			},
 			"CreatePhotoParams": {
 				"properties": {
@@ -475,6 +534,9 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IUserList": {
+				"$ref": "#/components/schemas/Paginate_User_"
+			},
 			"CreateUserParams": {
 				"properties": {
 					"username": {
@@ -526,7 +588,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/IUserDetail"
 								}
 							}
 						}
@@ -736,14 +798,14 @@
 		},
 		"/api/v1/users/groups/{id}": {
 			"get": {
-				"operationId": "GetGroup",
+				"operationId": "GetGroupDetail",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Group"
+									"$ref": "#/components/schemas/IGroupDetail"
 								}
 							}
 						}
@@ -779,7 +841,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Group"
+									"$ref": "#/components/schemas/IGroupDetail"
 								}
 							}
 						}
@@ -825,16 +887,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"affected": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"affected"
-									],
-									"type": "object"
+									"$ref": "#/components/schemas/Group"
 								}
 							}
 						}
@@ -865,14 +918,14 @@
 		},
 		"/api/v1/users/groups": {
 			"get": {
-				"operationId": "ListGroup",
+				"operationId": "GetGroupList",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Paginate_Group_"
+									"$ref": "#/components/schemas/IGroupList"
 								}
 							}
 						}
@@ -901,24 +954,6 @@
 							"default": 100,
 							"format": "double",
 							"type": "number"
-						}
-					},
-					{
-						"in": "query",
-						"name": "includeUsers",
-						"required": false,
-						"schema": {
-							"default": false,
-							"type": "boolean"
-						}
-					},
-					{
-						"in": "query",
-						"name": "includePermissions",
-						"required": false,
-						"schema": {
-							"default": false,
-							"type": "boolean"
 						}
 					},
 					{
@@ -971,14 +1006,14 @@
 		},
 		"/api/v1/users/permissions/{id}": {
 			"get": {
-				"operationId": "GetPermission",
+				"operationId": "GetPermissionDetail",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Permission"
+									"$ref": "#/components/schemas/IPermissionDetail"
 								}
 							}
 						}
@@ -1060,16 +1095,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"affected": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"affected"
-									],
-									"type": "object"
+									"$ref": "#/components/schemas/Permission"
 								}
 							}
 						}
@@ -1107,7 +1133,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Paginate_Permission_"
+									"$ref": "#/components/schemas/IPermissionList"
 								}
 							}
 						}
@@ -1142,6 +1168,15 @@
 							"default": 10,
 							"format": "double",
 							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "username",
+						"required": false,
+						"schema": {
+							"default": null,
+							"type": "string"
 						}
 					},
 					{
@@ -1194,14 +1229,14 @@
 		},
 		"/api/v1/users/photos/{id}": {
 			"get": {
-				"operationId": "GetItem",
+				"operationId": "GetPhotoDetail",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Photo"
+									"$ref": "#/components/schemas/IPhotoDetail"
 								}
 							}
 						}
@@ -1228,19 +1263,14 @@
 				]
 			},
 			"put": {
-				"operationId": "UpdateItem",
+				"operationId": "UpdatePhoto",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"anyOf": [
-										{
-											"$ref": "#/components/schemas/Photo"
-										},
-										{}
-									]
+									"$ref": "#/components/schemas/IPhotoDetail"
 								}
 							}
 						}
@@ -1286,7 +1316,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Paginate_Photo_"
+									"$ref": "#/components/schemas/IPhotoList"
 								}
 							}
 						}
@@ -1376,7 +1406,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/IUserDetail"
 								}
 							}
 						}
@@ -1410,7 +1440,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/IUserDetail"
 								}
 							}
 						}
@@ -1457,16 +1487,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"affected": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"affected"
-									],
-									"type": "object"
+									"$ref": "#/components/schemas/User"
 								}
 							}
 						}
@@ -1505,7 +1526,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Paginate_User_"
+									"$ref": "#/components/schemas/IUserList"
 								}
 							}
 						}

@@ -1,2 +1,3 @@
 src/generated/routes.ts
 src/generated/schema.ts
+prisma

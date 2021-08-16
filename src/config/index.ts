@@ -1,6 +1,3 @@
-import { ConnectionOptions } from "typeorm"
-import "sqlite3"
-
 import configDev from "./config.development.json"
 import configProd from "./config.production.json"
 
@@ -20,9 +17,4 @@ if (production) {
   config = { ...configProd }
 }
 
-const connectionConfig: ConnectionOptions = {
-  ...config.ormconfig,
-  type: "sqlite"
-}
-
-export { config, tsNode, connectionConfig, production, development }
+export { config, tsNode, production, development }

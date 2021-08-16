@@ -1,39 +1,33 @@
 import { Controller, Get, Path, Post, Put, Request } from "tsoa"
 import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
-import { Photo, User } from "../../entities"
-import { Paginate } from "../../dtos/paginate.dto"
-import { getManager, Equal } from "typeorm"
-import { CreatePhotoParams, UpdatePhotoParams } from "../../dtos/photo.dto"
+import { Photo } from "../../models"
+import { CreatePhotoParams, UpdatePhotoParams, IPhotoDetail, IPhotoList } from "../../dtos"
 import { ForbiddenError } from "../../../app/errors/MessageError"
-import { IAuthData, validatePermissions } from "../../../app/auth/auth.service"
+import { IAuthData, photoService, authService } from "../../services"
 
 @Route("api/v1/users/photos")
 @Tags("Users")
 export class PhotoController extends Controller {
   @Get("{id}")
   @Security("jwt")
-  public async getItem(@Path() id: number): Promise<Photo> {
-    return getManager().findOneOrFail(Photo, id)
+  public async getPhotoDetail(@Path() id: number): Promise<IPhotoDetail> {
+    return await photoService.getPhotoDetail(id)
   }
 
   @Put("{id}")
   @Security("jwt")
-  public async updateItem(
+  public async updatePhoto(
     @Request() req: { user: IAuthData },
     @Path() id: number,
     @Body() item: UpdatePhotoParams
-  ): Promise<Photo | void> {
-    const manager = getManager()
-    const photo = await manager.findOneOrFail(Photo, id, {
-      relations: ["users"]
-    })
+  ): Promise<IPhotoDetail> {
+    const photo = await photoService.getPhotoDetail(id)
 
-    if (!validatePermissions(req.user, ["userAdmin"], photo.user.username)) {
+    if (!authService.validatePermissions(req.user, ["userAdmin"], photo.user.username)) {
       throw new ForbiddenError("User can not edit this photo!")
     }
 
-    photo.url = item.url
-    return manager.save<Photo>(photo)
+    return await photoService.updatePhoto(id, item)
   }
 
   @Get("")
@@ -42,22 +36,8 @@ export class PhotoController extends Controller {
     @Query() page = 1,
     @Query() perPage = 10,
     @Query() username: string | null = null
-  ): Promise<Paginate<Photo>> {
-    const skip = perPage * (page - 1)
-    const manager = getManager()
-
-    let query = manager.createQueryBuilder(Photo, "photo").innerJoin("photo.user", "user")
-
-    if (username) {
-      query = query.where("user.username = :username", { username })
-    }
-
-    query.offset(skip)
-    query.limit(perPage)
-
-    const rows = await query.getMany()
-    const total = await query.getCount()
-    return { rows, page, perPage, total }
+  ): Promise<IPhotoList> {
+    return await photoService.getPhotoList(page, perPage, username)
   }
 
   @SuccessResponse("201", "Created")
@@ -67,15 +47,11 @@ export class PhotoController extends Controller {
     @Request() req: { user: IAuthData },
     @Body() item: CreatePhotoParams
   ): Promise<Photo> {
-    if (!validatePermissions(req.user, ["userAdmin"], item.username)) {
+    if (!authService.validatePermissions(req.user, ["userAdmin"], item.username)) {
       throw new ForbiddenError("Logged user can not create photo for another user!")
     }
 
-    const manager = getManager()
-    const newItem = manager.create(Photo, item)
-    newItem.user = await manager.findOneOrFail(User, {
-      where: { username: Equal(item.username) }
-    })
-    return manager.save<Photo>(newItem)
+    this.setStatus(201)
+    return await photoService.createPhoto(req.user.id, item)
   }
 }

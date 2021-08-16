@@ -1,104 +1,47 @@
 import { Controller, Get, Path, Delete, Post, Put } from "tsoa"
 import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
-import { CreateGroupParams, UpdateGroupParams } from "../../dtos/group.dto"
-import { Paginate } from "../../dtos/paginate.dto"
-import { Equal, getManager, In } from "typeorm"
-import { Group, User, Permission } from "../../entities"
+import { CreateGroupParams, UpdateGroupParams, IGroupDetail, IGroupList } from "../../dtos"
+import { Group } from "../../models"
+import { groupService } from "../../services"
 
 @Route("api/v1/users/groups")
 @Tags("Users")
 export class RoleController extends Controller {
   @Get("{id}")
   @Security("jwt", ["groups:read"])
-  public async getGroup(@Path() id: number): Promise<Group> {
-    return getManager().findOneOrFail(Group, id, {
-      relations: ["users", "permissions"]
-    })
+  public async getGroupDetail(@Path() id: number): Promise<IGroupDetail> {
+    return await groupService.getGroupDetail(id)
   }
 
   @Put("{id}")
   @Security("jwt", ["groups:update"])
-  public async updateGroup(@Path() id: number, @Body() item: UpdateGroupParams): Promise<Group> {
-    return await getManager().transaction(async (trx) => {
-      const group = await trx.findOneOrFail(Group, id, {
-        relations: ["users", "permissions"]
-      })
-
-      if (item.isActive != undefined) {
-        group.isActive = item.isActive
-      }
-
-      if (item.permissions) {
-        group.permissions = await trx.find(Permission, {
-          where: { name: In(item.permissions.map((p) => p.name)) }
-        })
-      }
-
-      if (item.users) {
-        group.users = await trx.find(User, {
-          where: { username: In(item.users.map((p) => p.username)) }
-        })
-      }
-
-      return trx.save<Group>(group)
-    })
+  public async updateGroup(
+    @Path() id: number,
+    @Body() item: UpdateGroupParams
+  ): Promise<IGroupDetail> {
+    return await groupService.updateGroup(id, item)
   }
 
   @Get()
-  public async listGroup(
+  public async getGroupList(
     @Query() page = 1,
     @Query() perPage = 100,
-    @Query() includeUsers = false,
-    @Query() includePermissions = false,
     @Query() isActive = true
-  ): Promise<Paginate<Group>> {
-    const skip = perPage * (page - 1)
-    const manager = getManager()
-    const relations: string[] = []
-
-    if (includeUsers) {
-      relations.push("users")
-    }
-    if (includePermissions) {
-      relations.push("permissions")
-    }
-
-    const rowsAndTotal = await manager.findAndCount(Group, {
-      take: perPage,
-      skip,
-      relations,
-      where: { isActive: Equal(isActive) }
-    })
-
-    const rows = rowsAndTotal[0]
-    const total = rowsAndTotal[1]
-    return { rows, page, perPage, total }
+  ): Promise<IGroupList> {
+    return await groupService.getGroupList(page, perPage, isActive)
   }
 
   @Post()
   @SuccessResponse("201", "Created")
   @Security("jwt", ["groups:create"])
   public async createGroup(@Body() item: CreateGroupParams): Promise<Group> {
-    return await getManager().transaction(async (trx) => {
-      const group = trx.create(Group, {
-        name: item.name,
-        description: item.description
-      })
-
-      if (item.permissions) {
-        group.permissions = await trx.find(Permission, {
-          where: { name: In(item.permissions.map((p) => p.name)) }
-        })
-      }
-
-      return trx.save<Group>(group)
-    })
+    this.setStatus(201)
+    return await groupService.createGroup(item)
   }
 
   @Delete("{id}")
   @Security("jwt", ["groups:delete"])
-  public async deleteGroup(@Path() id: number): Promise<{ affected: number }> {
-    const result = await getManager().delete(Group, id)
-    return { affected: result.affected || 0 }
+  public async deleteGroup(@Path() id: number): Promise<Group> {
+    return await groupService.deleteGroup(id)
   }
 }

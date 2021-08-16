@@ -1,17 +1,21 @@
 import { Controller, Get, Path, Delete, Post, Put } from "tsoa"
 import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
-import { Permission } from "../../entities"
-import { Paginate } from "../../dtos/paginate.dto"
-import { Equal, getManager } from "typeorm"
-import { CreatePermissionParams, UpdatePermissionParams } from "../../dtos/permission.dto"
+import { permissionService } from "../../services"
+import { Permission } from "../../models"
+import {
+  CreatePermissionParams,
+  UpdatePermissionParams,
+  IPermissionDetail,
+  IPermissionList
+} from "../../dtos"
 
 @Route("api/v1/users/permissions")
 @Tags("Users")
 export class PermissionController extends Controller {
   @Get("{id}")
   @Security("jwt", ["permissions:read"])
-  public async getPermission(@Path() id: number): Promise<Permission> {
-    return getManager().findOneOrFail(Permission, id)
+  public async getPermissionDetail(@Path() id: number): Promise<IPermissionDetail> {
+    return await permissionService.getPermissionDetail(id)
   }
 
   @Put("{id}")
@@ -20,16 +24,7 @@ export class PermissionController extends Controller {
     @Path() id: number,
     @Body() item: UpdatePermissionParams
   ): Promise<Permission> {
-    const manager = getManager()
-    const perm = await manager.findOneOrFail(Permission, id)
-
-    perm.description = item.description || ""
-
-    if (item.isActive != undefined) {
-      perm.isActive = item.isActive
-    }
-
-    return manager.save<Permission>(perm)
+    return await permissionService.updatePermission(id, item)
   }
 
   @Get("")
@@ -37,37 +32,23 @@ export class PermissionController extends Controller {
   public async listPermissions(
     @Query() page = 1,
     @Query() perPage = 10,
+    @Query() username: string | null = null,
     @Query() isActive = true
-  ): Promise<Paginate<Permission>> {
-    const skip = perPage * (page - 1)
-    const manager = getManager()
-
-    const rowsAndTotal = await manager.findAndCount(Permission, {
-      take: perPage,
-      skip,
-      where: { isActive: Equal(isActive) }
-    })
-
-    const rows = rowsAndTotal[0]
-    const total = rowsAndTotal[1]
-    return { rows, page, perPage, total }
+  ): Promise<IPermissionList> {
+    return await permissionService.getPermissionList(page, perPage, username, isActive)
   }
 
   @SuccessResponse("201", "Created")
   @Post()
   @Security("jwt", ["permissions:create"])
   public async createPermission(@Body() item: CreatePermissionParams): Promise<Permission> {
-    const manager = getManager()
-    const newItem = manager.create(Permission, item)
-
     this.setStatus(201)
-    return manager.save<Permission>(newItem)
+    return await permissionService.createPermission(item)
   }
 
   @Delete("{id}")
   @Security("jwt", ["permissions:delete"])
-  public async deletePermission(@Path() id: number): Promise<{ affected: number }> {
-    const result = await getManager().delete(Permission, id)
-    return { affected: result.affected || 0 }
+  public async deletePermission(@Path() id: number): Promise<Permission> {
+    return await permissionService.deletePermission(id)
   }
 }

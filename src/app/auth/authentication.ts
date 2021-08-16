@@ -1,6 +1,6 @@
 import * as express from "express"
 import * as jwt from "jsonwebtoken"
-import { getUser, IAuthData, validatePermissions } from "./auth.service"
+import { IAuthData, authService } from "../services/auth.service"
 import { ForbiddenError, UnauthorizedError } from "../errors/MessageError"
 import { config } from "../../config"
 
@@ -18,8 +18,9 @@ export async function expressAuthentication(
     const username = userPass[0]
     const password = userPass[1]
 
-    const user = await getUser(username, password)
-    if (!validatePermissions(user, scopes)) {
+    const user = await authService.getUser(username, password)
+
+    if (!authService.validatePermissions(user, scopes)) {
       throw new ForbiddenError("JWT does not contain required permission.")
     }
     return user
@@ -38,7 +39,7 @@ export async function expressAuthentication(
     }) as { payload: unknown }
 
     const user = decoded.payload as IAuthData
-    if (!validatePermissions(user, scopes)) {
+    if (!authService.validatePermissions(user, scopes)) {
       throw new ForbiddenError("JWT does not contain required permission.")
     }
     return user

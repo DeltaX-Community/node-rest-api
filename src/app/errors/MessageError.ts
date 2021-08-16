@@ -12,6 +12,12 @@ export class MessageError {
   }
 }
 
+export class NotFoundError extends MessageError {
+  constructor(message: string) {
+    super("ERROR", "Not Found", message, 404)
+  }
+}
+
 export class UnauthorizedError extends MessageError {
   constructor(message: string) {
     super("ERROR", "Unauthorized", message, 401)

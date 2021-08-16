@@ -20,16 +20,16 @@ export interface paths {
     get: operations["Logout"];
   };
   "/api/v1/users/groups/{id}": {
-    get: operations["GetGroup"];
+    get: operations["GetGroupDetail"];
     put: operations["UpdateGroup"];
     delete: operations["DeleteGroup"];
   };
   "/api/v1/users/groups": {
-    get: operations["ListGroup"];
+    get: operations["GetGroupList"];
     post: operations["CreateGroup"];
   };
   "/api/v1/users/permissions/{id}": {
-    get: operations["GetPermission"];
+    get: operations["GetPermissionDetail"];
     put: operations["UpdatePermission"];
     delete: operations["DeletePermission"];
   };
@@ -38,8 +38,8 @@ export interface paths {
     post: operations["CreatePermission"];
   };
   "/api/v1/users/photos/{id}": {
-    get: operations["GetItem"];
-    put: operations["UpdateItem"];
+    get: operations["GetPhotoDetail"];
+    put: operations["UpdatePhoto"];
   };
   "/api/v1/users/photos": {
     get: operations["GetList"];
@@ -58,52 +58,57 @@ export interface paths {
 
 export interface components {
   schemas: {
+    /** Model User */
     User: {
-      id: number;
-      username: string;
+      isActive: boolean;
+      createAt: string;
+      updatedAt: string;
+      passwordHash: string | null;
+      email: string | null;
       fullName: string;
-      email: string;
-      passwordHash: string;
+      username: string;
+      id: number;
+    };
+    /** Model Photo */
+    Photo: {
+      isActive: boolean;
+      createAt: string;
+      updatedAt: string;
+      userId: number;
+      url: string;
+      id: number;
+    };
+    /** Model Group */
+    Group: {
+      isActive: boolean;
+      createAt: string;
+      updatedAt: string;
+      description: string;
+      name: string;
+      id: number;
+    };
+    IUserDetail: components["schemas"]["User"] & {
+      permissions: string[];
       groups: components["schemas"]["Group"][];
       photos: components["schemas"]["Photo"][];
-      updatedAt: string;
-      createAt: string;
-      isActive: boolean;
     };
-    Group: {
-      id: number;
-      name: string;
-      description: string;
-      users: components["schemas"]["User"][];
-      permissions: components["schemas"]["Permission"][];
-      updatedAt: string;
-      createAt: string;
-      isActive: boolean;
-    };
+    /** Model Permission */
     Permission: {
-      id: number;
-      name: string;
-      description: string;
-      groups: components["schemas"]["Group"][];
+      isActive: boolean;
+      createAt: string;
       updatedAt: string;
-      createAt: string;
-      isActive: boolean;
-    };
-    Photo: {
+      description: string | null;
+      name: string;
       id: number;
-      user: components["schemas"]["User"];
-      url: string;
-      createAt: string;
-      isActive: boolean;
+    };
+    IGroupDetail: components["schemas"]["Group"] & {
+      permissions: components["schemas"]["Permission"][];
     };
     UpdateGroupParams: {
       description?: string;
       isActive?: boolean;
       permissions?: {
         name: string;
-      }[];
-      users?: {
-        username: string;
       }[];
     };
     Paginate_Group_: {
@@ -112,6 +117,7 @@ export interface components {
       perPage: number;
       total: number;
     };
+    IGroupList: components["schemas"]["Paginate_Group_"];
     CreateGroupParams: {
       name: string;
       description: string;
@@ -119,6 +125,7 @@ export interface components {
         name: string;
       }[];
     };
+    IPermissionDetail: components["schemas"]["Permission"];
     UpdatePermissionParams: {
       description?: string;
       isActive?: boolean;
@@ -129,9 +136,16 @@ export interface components {
       perPage: number;
       total: number;
     };
+    IPermissionList: components["schemas"]["Paginate_Permission_"];
     CreatePermissionParams: {
       name: string;
       description?: string;
+    };
+    IPhotoDetail: components["schemas"]["Photo"] & {
+      user: {
+        username: string;
+        id: number;
+      };
     };
     UpdatePhotoParams: {
       url: string;
@@ -142,6 +156,7 @@ export interface components {
       perPage: number;
       total: number;
     };
+    IPhotoList: components["schemas"]["Paginate_Photo_"];
     CreatePhotoParams: {
       username: string;
       url: string;
@@ -164,6 +179,7 @@ export interface components {
       perPage: number;
       total: number;
     };
+    IUserList: components["schemas"]["Paginate_User_"];
     CreateUserParams: {
       username: string;
       fullName: string;
@@ -187,7 +203,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["User"];
+          "application/json": components["schemas"]["IUserDetail"];
         };
       };
     };
@@ -269,7 +285,7 @@ export interface operations {
       401: unknown;
     };
   };
-  GetGroup: {
+  GetGroupDetail: {
     parameters: {
       path: {
         id: number;
@@ -279,7 +295,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Group"];
+          "application/json": components["schemas"]["IGroupDetail"];
         };
       };
     };
@@ -294,7 +310,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Group"];
+          "application/json": components["schemas"]["IGroupDetail"];
         };
       };
     };
@@ -314,20 +330,16 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": {
-            affected: number;
-          };
+          "application/json": components["schemas"]["Group"];
         };
       };
     };
   };
-  ListGroup: {
+  GetGroupList: {
     parameters: {
       query: {
         page?: number;
         perPage?: number;
-        includeUsers?: boolean;
-        includePermissions?: boolean;
         isActive?: boolean;
       };
     };
@@ -335,7 +347,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Paginate_Group_"];
+          "application/json": components["schemas"]["IGroupList"];
         };
       };
     };
@@ -356,7 +368,7 @@ export interface operations {
       };
     };
   };
-  GetPermission: {
+  GetPermissionDetail: {
     parameters: {
       path: {
         id: number;
@@ -366,7 +378,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Permission"];
+          "application/json": components["schemas"]["IPermissionDetail"];
         };
       };
     };
@@ -401,9 +413,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": {
-            affected: number;
-          };
+          "application/json": components["schemas"]["Permission"];
         };
       };
     };
@@ -413,6 +423,7 @@ export interface operations {
       query: {
         page?: number;
         perPage?: number;
+        username?: string;
         isActive?: boolean;
       };
     };
@@ -420,7 +431,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Paginate_Permission_"];
+          "application/json": components["schemas"]["IPermissionList"];
         };
       };
     };
@@ -441,7 +452,7 @@ export interface operations {
       };
     };
   };
-  GetItem: {
+  GetPhotoDetail: {
     parameters: {
       path: {
         id: number;
@@ -451,12 +462,12 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Photo"];
+          "application/json": components["schemas"]["IPhotoDetail"];
         };
       };
     };
   };
-  UpdateItem: {
+  UpdatePhoto: {
     parameters: {
       path: {
         id: number;
@@ -466,8 +477,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": Partial<components["schemas"]["Photo"]> &
-            Partial<{ [key: string]: unknown }>;
+          "application/json": components["schemas"]["IPhotoDetail"];
         };
       };
     };
@@ -489,7 +499,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Paginate_Photo_"];
+          "application/json": components["schemas"]["IPhotoList"];
         };
       };
     };
@@ -520,7 +530,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["User"];
+          "application/json": components["schemas"]["IUserDetail"];
         };
       };
     };
@@ -540,9 +550,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": {
-            affected: number;
-          };
+          "application/json": components["schemas"]["User"];
         };
       };
     };
@@ -559,7 +567,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Paginate_User_"];
+          "application/json": components["schemas"]["IUserList"];
         };
       };
     };
