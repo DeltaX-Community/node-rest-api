@@ -5,6 +5,8 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "somerandomaccess
 const REFRESH_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "somerandomstringforrefreshtoken"
 const isProduction = ENV == "production"
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-console.log({ ENV, PORT, DATABASE_URL, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, isProduction })
+if (!isProduction) {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  console.log({ ENV, PORT, DATABASE_URL, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, isProduction })
+}
 export { ENV, PORT, DATABASE_URL, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, isProduction }

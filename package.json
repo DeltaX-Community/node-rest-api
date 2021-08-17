@@ -6,15 +6,15 @@
   "scripts": {
     "build": "npm run tsoa && tsc --build",
     "start": "node build/index.js",
-    "start:prod": "set NODE_ENV=production&& node build/index.js",
     "predev": "npm run tsoa",
     "dev": "set TS_NODE=TRUE&& nodemon --watch src src/index.ts",
     "tsoa": "tsoa spec-and-routes && npx openapi-typescript src/generated/swagger.json --output src/generated/schema.ts",
     "tsoa:mon": "nodemon --watch src --ignore src/generated -e ts,json -x npm run tsoa",
-    "seed": "ts-node prisma/seed.ts", 
     "build:e2e": "npm run tsoa && tsc -p tsconfig.e2e.json",
     "start:e2e": "mocha --timeout 4000 --file build/e2e.js \"build/e2e/**/*.js\"",
     "e2e": "npm run build:e2e && npm run start:e2e",
+    "db:push": "prisma db push", 
+    "db:seed": "ts-node prisma/seed.ts", 
     "lint": "eslint src --fix"
   },
   "repository": {
