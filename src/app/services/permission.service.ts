@@ -1,16 +1,17 @@
 import {
-  createPermissionDetail,
-  createPermissionList,
-  CreatePermissionParams,
-  UpdatePermissionParams,
-  IPermissionDetail,
-  IPermissionList
+  buildPermissionDetailDto,
+  buildPermissionListDto,
+  CreatePermissionDto,
+  UpdatePermissionDto,
+  PermissionDetailDto,
+  PermissionListDto,
+  PermissionDto
 } from "../dtos"
-import { Permission, prisma } from "../models"
+import { prisma } from "../models"
 import { NotFoundError } from "../errors/MessageError"
 
 class PermissionService {
-  async getPermissionDetail(id: number): Promise<IPermissionDetail> {
+  async getPermissionDetail(id: number): Promise<PermissionDetailDto> {
     const permission = await prisma.permission.findFirst({
       where: {
         id: id
@@ -21,10 +22,10 @@ class PermissionService {
       throw new NotFoundError("Permission not found!")
     }
 
-    return createPermissionDetail(permission)
+    return buildPermissionDetailDto(permission)
   }
 
-  async updatePermission(id: number, item: UpdatePermissionParams): Promise<IPermissionDetail> {
+  async updatePermission(id: number, item: UpdatePermissionDto): Promise<PermissionDetailDto> {
     const permission = await prisma.permission.update({
       where: { id: id },
       data: {
@@ -32,7 +33,7 @@ class PermissionService {
       }
     })
 
-    return createPermissionDetail(permission)
+    return buildPermissionDetailDto(permission)
   }
 
   async getPermissionList(
@@ -40,14 +41,14 @@ class PermissionService {
     perPage = 10,
     username: string | null = null,
     isActive = true
-  ): Promise<IPermissionList> {
+  ): Promise<PermissionListDto> {
     const skip = perPage * (page - 1)
 
     const where = {
       isActive: isActive,
       groups: {
         some: {
-          userGroups: {
+          users: {
             some: {
               user: {
                 username: username || undefined
@@ -63,14 +64,14 @@ class PermissionService {
       prisma.permission.count({ where })
     ])
 
-    return createPermissionList(rowsAndCount[0], page, perPage, rowsAndCount[1])
+    return buildPermissionListDto(rowsAndCount[0], page, perPage, rowsAndCount[1])
   }
 
-  async createPermission(data: CreatePermissionParams): Promise<Permission> {
+  async createPermission(data: CreatePermissionDto): Promise<PermissionDto> {
     return await prisma.permission.create({ data: data })
   }
 
-  async deletePermission(id: number): Promise<Permission> {
+  async deletePermission(id: number): Promise<PermissionDto> {
     return await prisma.permission.delete({ where: { id } })
   }
 }

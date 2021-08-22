@@ -38,7 +38,7 @@ export async function insertUsers(prisma: PrismaClient) {
                 username: u.username
             },
             data: {
-                userGroups: {
+                groups: {
                     create: {
                         group: {
                             connect: {

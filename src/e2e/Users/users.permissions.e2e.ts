@@ -2,27 +2,27 @@ import { expect } from "chai"
 import { agent as request } from "supertest"
 import { paths } from "../../generated/schema"
 
-type IAuthGetResponse =
+type IPostAuthLoginResp =
   paths["/auth/login"]["post"]["responses"]["200"]["content"]["application/json"]
 
-type IPermissionGetParamQuery = paths["/api/v1/users/permissions"]["get"]["parameters"]["query"]
+type IGetPermissionQuery = paths["/api/v1/users/permissions"]["get"]["parameters"]["query"]
 
-type IPermissionGetManyResponse =
+type IGetPermissionManyResp =
   paths["/api/v1/users/permissions"]["get"]["responses"]["200"]["content"]["application/json"]
 
-type IPermissionGetsResponse =
+type IGetPermissionResp =
   paths["/api/v1/users/permissions/{id}"]["get"]["responses"]["200"]["content"]["application/json"]
 
-type IPermissionCreateResponse =
+type IPostPermissionResp =
   paths["/api/v1/users/permissions"]["post"]["responses"]["201"]["content"]["application/json"]
 
 export function permissionsDescribe(app) {
-  let resultLogin: IAuthGetResponse
+  let resultLogin: IPostAuthLoginResp
 
   before(async () => {
     // Auth
     const res = await request(app).post("/auth/login").send({ password: "", username: "admin" })
-    resultLogin = res.body as IAuthGetResponse
+    resultLogin = res.body as IPostAuthLoginResp
     expect(resultLogin.refreshToken).not.to.be.empty
     expect(resultLogin.accessToken).not.to.be.empty
   })
@@ -30,7 +30,7 @@ export function permissionsDescribe(app) {
   it("GET /api/v1/users/permissions without Credentials", async function () {
     const res = await request(app)
       .get("/api/v1/users/permissions")
-      .query({ page: 2, perPage: 1 } as IPermissionGetParamQuery)
+      .query({ page: 2, perPage: 1 } as IGetPermissionQuery)
       .send()
     expect(res.status).to.equal(401)
   })
@@ -38,11 +38,11 @@ export function permissionsDescribe(app) {
   it("GET /api/v1/users/permissions with Credentials", async () => {
     const res = await request(app)
       .get("/api/v1/users/permissions")
-      .query({ page: 2, perPage: 1 } as IPermissionGetParamQuery)
+      .query({ page: 2, perPage: 1 } as IGetPermissionQuery)
       .auth(resultLogin.accessToken, { type: "bearer" })
       .send()
 
-    const result = res.body as IPermissionGetManyResponse
+    const result = res.body as IGetPermissionManyResp
     expect(res.status).to.equal(200)
     expect(result.page).to.equal(2)
     expect(result.perPage).to.equal(1)
@@ -66,7 +66,7 @@ export function permissionsDescribe(app) {
       })
 
     expect(resCreate.status).to.equal(201)
-    const result = resCreate.body as IPermissionCreateResponse
+    const result = resCreate.body as IPostPermissionResp
     expect(result.id).to.gte(1)
     expect(result.name).to.eq("permission:prueba")
     expect(result.isActive).to.eq(true)
@@ -91,7 +91,7 @@ export function permissionsDescribe(app) {
       .auth(resultLogin.accessToken, { type: "bearer" })
       .send()
 
-    const resultGet = resGet.body as IPermissionGetsResponse
+    const resultGet = resGet.body as IGetPermissionResp
 
     expect(resGet.status).to.equal(200)
     expect(resultGet.id).to.eq(permId)

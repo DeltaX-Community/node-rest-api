@@ -1,13 +1,16 @@
 import { User, Photo, Group, Permission } from "../models"
 import { Paginate } from "./paginate.dto"
 
-export interface CreateUserParams {
+export type CreateUserDto = {
+  /**
+   * @minLength 1 array must not be empty
+   */
   username: string
   fullName: string
   email?: string
 }
 
-export interface UpdateUserParams {
+export type UpdateUserDto = {
   fullName?: string
   email?: string
   password?: string
@@ -16,47 +19,42 @@ export interface UpdateUserParams {
   photos?: { url: string }[]
 }
 
-// export type IUserList = Paginate<Omit<User, "passwordHash">>
-export type IUserList = Paginate<User>
+export type UserListDto = Paginate<User>
 
-export type IUserDetail = User & {
+export type UserDto = User
+
+export type UserDetailDto = User & {
   photos: Photo[]
   groups: Group[]
   permissions: string[]
 }
 
-export function createUserLists(
+export function buildUserListsDto(
   users: User[],
   page: number,
   perPage: number,
   total: number
-): IUserList {
+): UserListDto {
   const rows = users.map((u) => {
     return { ...u, passwordHash: undefined } as unknown as User
   })
   return { rows, page, perPage, total }
 }
 
-export function createUserDetail(
+export function buildUserDetailDto(
   user: User,
   photos: Photo[] | null,
   groups: Group[] | null,
   permissions: Permission[] | null
-): IUserDetail {
+): UserDetailDto {
   const groupsOnly = groups?.map((g) => {
     return { ...g, permissions: undefined } as Group
   })
 
   return {
-    id: user.id,
-    username: user.username,
-    fullName: user.fullName,
-    email: user.email,
+    ...user,
     photos: photos,
     groups: groupsOnly,
-    permissions: permissions?.map((p) => p.name),
-    updatedAt: user.updatedAt,
-    createAt: user.createAt,
-    isActive: user.isActive
-  } as IUserDetail
+    permissions: permissions?.map((p) => p.name)
+  } as UserDetailDto
 }

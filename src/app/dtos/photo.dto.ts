@@ -1,34 +1,40 @@
 import { Photo } from "../models"
 import { Paginate } from "./paginate.dto"
 
-export interface CreatePhotoParams {
+export type CreatePhotoDto = {
   username: string
   url: string
 }
 
-export interface UpdatePhotoParams {
+export type UpdatePhotoDto = {
   url: string
 }
 
-export type IPhotoDetail = Photo & {
+export type PhotoDetailDto = Photo & {
   user: {
     id: number
     username: string
   }
 }
 
-export type IPhotoList = Paginate<Photo>
+export type PhotoListDto = Paginate<Photo>
 
-export function createPhotoList(
+export type PhotoDto = Photo
+
+export function buildPhotoListDto(
   photos: Photo[],
   page: number,
   perPage: number,
   total: number
-): IPhotoList {
+): PhotoListDto {
   return { rows: photos, page, perPage, total }
 }
 
-export function createPhotoDetail(photo: Photo, userId: number, username: string): IPhotoDetail {
+export function buildPhotoDetailDto(
+  photo: Photo,
+  userId: number,
+  username: string
+): PhotoDetailDto {
   return {
     id: photo.id,
     url: photo.url,
@@ -39,5 +45,5 @@ export function createPhotoDetail(photo: Photo, userId: number, username: string
       id: userId,
       username: username
     }
-  } as IPhotoDetail
+  } as PhotoDetailDto
 }

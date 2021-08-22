@@ -35,9 +35,14 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"isActive":{"dataType":"boolean","required":true},"createAt":{"dataType":"datetime","required":true},"updatedAt":{"dataType":"datetime","required":true},"description":{"dataType":"string","required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IUserDetail": {
+    "UserDetailDto": {
         "dataType": "refAlias",
         "type": {"dataType":"intersection","subSchemas":[{"ref":"User"},{"dataType":"nestedObjectLiteral","nestedProperties":{"permissions":{"dataType":"array","array":{"dataType":"string"},"required":true},"groups":{"dataType":"array","array":{"dataType":"refAlias","ref":"Group"},"required":true},"photos":{"dataType":"array","array":{"dataType":"refAlias","ref":"Photo"},"required":true}}}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserDto": {
+        "dataType": "refAlias",
+        "type": {"ref":"User","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Permission": {
@@ -45,19 +50,14 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"isActive":{"dataType":"boolean","required":true},"createAt":{"dataType":"datetime","required":true},"updatedAt":{"dataType":"datetime","required":true},"description":{"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},"name":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IGroupDetail": {
+    "GroupDetailDto": {
         "dataType": "refAlias",
         "type": {"dataType":"intersection","subSchemas":[{"ref":"Group"},{"dataType":"nestedObjectLiteral","nestedProperties":{"permissions":{"dataType":"array","array":{"dataType":"refAlias","ref":"Permission"},"required":true}}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UpdateGroupParams": {
-        "dataType": "refObject",
-        "properties": {
-            "description": {"dataType":"string"},
-            "isActive": {"dataType":"boolean"},
-            "permissions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},
-        },
-        "additionalProperties": false,
+    "UpdateGroupDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"permissions":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},"isActive":{"dataType":"boolean"},"description":{"dataType":"string"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Paginate_Group_": {
@@ -71,33 +71,34 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IGroupList": {
+    "GroupListDto": {
         "dataType": "refAlias",
         "type": {"ref":"Paginate_Group_","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreateGroupParams": {
-        "dataType": "refObject",
-        "properties": {
-            "name": {"dataType":"string","required":true},
-            "description": {"dataType":"string","required":true},
-            "permissions": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},
-        },
-        "additionalProperties": false,
+    "CreateGroupDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"permissions":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},"description":{"dataType":"string","required":true},"name":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IPermissionDetail": {
+    "GroupDto": {
+        "dataType": "refAlias",
+        "type": {"ref":"Group","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PermissionDetailDto": {
         "dataType": "refAlias",
         "type": {"ref":"Permission","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UpdatePermissionParams": {
-        "dataType": "refObject",
-        "properties": {
-            "description": {"dataType":"string"},
-            "isActive": {"dataType":"boolean"},
-        },
-        "additionalProperties": false,
+    "PermissionDto": {
+        "dataType": "refAlias",
+        "type": {"ref":"Permission","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdatePermissionDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"isActive":{"dataType":"boolean"},"description":{"dataType":"string"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Paginate_Permission_": {
@@ -111,31 +112,24 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IPermissionList": {
+    "PermissionListDto": {
         "dataType": "refAlias",
         "type": {"ref":"Paginate_Permission_","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreatePermissionParams": {
-        "dataType": "refObject",
-        "properties": {
-            "name": {"dataType":"string","required":true},
-            "description": {"dataType":"string"},
-        },
-        "additionalProperties": false,
+    "CreatePermissionDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"description":{"dataType":"string"},"name":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IPhotoDetail": {
+    "PhotoDetailDto": {
         "dataType": "refAlias",
         "type": {"dataType":"intersection","subSchemas":[{"ref":"Photo"},{"dataType":"nestedObjectLiteral","nestedProperties":{"user":{"dataType":"nestedObjectLiteral","nestedProperties":{"username":{"dataType":"string","required":true},"id":{"dataType":"double","required":true}},"required":true}}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UpdatePhotoParams": {
-        "dataType": "refObject",
-        "properties": {
-            "url": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
+    "UpdatePhotoDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Paginate_Photo_": {
@@ -149,31 +143,24 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IPhotoList": {
+    "PhotoListDto": {
         "dataType": "refAlias",
         "type": {"ref":"Paginate_Photo_","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreatePhotoParams": {
-        "dataType": "refObject",
-        "properties": {
-            "username": {"dataType":"string","required":true},
-            "url": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
+    "PhotoDto": {
+        "dataType": "refAlias",
+        "type": {"ref":"Photo","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UpdateUserParams": {
-        "dataType": "refObject",
-        "properties": {
-            "fullName": {"dataType":"string"},
-            "email": {"dataType":"string"},
-            "password": {"dataType":"string"},
-            "isActive": {"dataType":"boolean"},
-            "groups": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},
-            "photos": {"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string","required":true}}}},
-        },
-        "additionalProperties": false,
+    "CreatePhotoDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string","required":true},"username":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateUserDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"photos":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"url":{"dataType":"string","required":true}}}},"groups":{"dataType":"array","array":{"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true}}}},"isActive":{"dataType":"boolean"},"password":{"dataType":"string"},"email":{"dataType":"string"},"fullName":{"dataType":"string"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Paginate_User_": {
@@ -187,19 +174,14 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IUserList": {
+    "UserListDto": {
         "dataType": "refAlias",
         "type": {"ref":"Paginate_User_","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreateUserParams": {
-        "dataType": "refObject",
-        "properties": {
-            "username": {"dataType":"string","required":true},
-            "fullName": {"dataType":"string","required":true},
-            "email": {"dataType":"string"},
-        },
-        "additionalProperties": false,
+    "CreateUserDto": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string"},"fullName":{"dataType":"string","required":true},"username":{"dataType":"string","required":true,"validators":{"minLength":{"errorMsg":"array must not be empty","value":1}}}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -362,7 +344,7 @@ export function RegisterRoutes(app: express.Router) {
             function RoleController_updateGroup(request: any, response: any, next: any) {
             const args = {
                     id: {"in":"path","name":"id","required":true,"dataType":"double"},
-                    item: {"in":"body","name":"item","required":true,"ref":"UpdateGroupParams"},
+                    item: {"in":"body","name":"item","required":true,"ref":"UpdateGroupDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -411,7 +393,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function RoleController_createGroup(request: any, response: any, next: any) {
             const args = {
-                    item: {"in":"body","name":"item","required":true,"ref":"CreateGroupParams"},
+                    item: {"in":"body","name":"item","required":true,"ref":"CreateGroupDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -484,7 +466,7 @@ export function RegisterRoutes(app: express.Router) {
             function PermissionController_updatePermission(request: any, response: any, next: any) {
             const args = {
                     id: {"in":"path","name":"id","required":true,"dataType":"double"},
-                    item: {"in":"body","name":"item","required":true,"ref":"UpdatePermissionParams"},
+                    item: {"in":"body","name":"item","required":true,"ref":"UpdatePermissionDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -535,7 +517,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function PermissionController_createPermission(request: any, response: any, next: any) {
             const args = {
-                    item: {"in":"body","name":"item","required":true,"ref":"CreatePermissionParams"},
+                    item: {"in":"body","name":"item","required":true,"ref":"CreatePermissionDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -609,7 +591,7 @@ export function RegisterRoutes(app: express.Router) {
             const args = {
                     req: {"in":"request","name":"req","required":true,"dataType":"object"},
                     id: {"in":"path","name":"id","required":true,"dataType":"double"},
-                    item: {"in":"body","name":"item","required":true,"ref":"UpdatePhotoParams"},
+                    item: {"in":"body","name":"item","required":true,"ref":"UpdatePhotoDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -660,7 +642,7 @@ export function RegisterRoutes(app: express.Router) {
             function PhotoController_createPhoto(request: any, response: any, next: any) {
             const args = {
                     req: {"in":"request","name":"req","required":true,"dataType":"object"},
-                    item: {"in":"body","name":"item","required":true,"ref":"CreatePhotoParams"},
+                    item: {"in":"body","name":"item","required":true,"ref":"CreatePhotoDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -709,7 +691,7 @@ export function RegisterRoutes(app: express.Router) {
             function UsersController_updateUser(request: any, response: any, next: any) {
             const args = {
                     id: {"in":"path","name":"id","required":true,"dataType":"double"},
-                    item: {"in":"body","name":"item","required":true,"ref":"UpdateUserParams"},
+                    item: {"in":"body","name":"item","required":true,"ref":"UpdateUserDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -759,7 +741,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function UsersController_createUser(request: any, response: any, next: any) {
             const args = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"CreateUserParams"},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"CreateUserDto"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

@@ -1,0 +1,528 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlserver"
+    url      = "mysql://root@127.0.0.1:3306/Asdf"
+}
+
+model ChildRequest {
+    idChildRequest      Int                   @id
+    idRequest           Int
+    idRequestState      Int
+    idService           Int
+    idProvider          Int?
+    comments            String?               @db.Text
+    isActive            Int                   @default(1) @db.TinyInt
+    createAt            DateTime              @default(now()) @db.DateTimeOffset
+    updateAt            DateTime              @default(now()) @updatedAt @db.DateTimeOffset
+    craneRequest        CraneRequest?
+    request             Request               @relation(fields: [idRequest], references: [idRequest])
+    requestState        RequestState          @relation(fields: [idRequestState], references: [idRequestState])
+    services            Service               @relation(fields: [idService], references: [idService])
+    provider            Provider?             @relation(fields: [idProvider], references: [idProvider])
+    requestStateHistory RequestStateHistory[]
+    resourceRequests    ResourceRequest[]
+    serviceRequest      ServiceRequest?
+    workReports         WorkReport[]
+
+    @@index([idRequestState], name: "FK_ChildRequests_RequestStates")
+    @@index([idRequest], name: "FK_ChildRequests_Requests")
+    @@index([idService], name: "FK_ChildRequests_Services")
+    @@map("ChildRequests")
+}
+
+model CraneRequest {
+    idChildRequest    Int             @id
+    idServiceProvider Int
+    idImputation      Int?
+    supervisor        String          @db.NVarChar(50)
+    riskyLift         Int             @db.TinyInt
+    loadWeight        Int
+    maxRadius         Int
+    maxLength         Int
+    isActive          Int             @default(1) @db.TinyInt
+    createAt          DateTime        @default(now()) @db.DateTimeOffset
+    updateAt          DateTime        @default(now()) @updatedAt @db.DateTimeOffset
+    liftingPlan       LiftingPlan     @relation(fields: [idChildRequest], references: [idChildRequest])
+    imputation        Imputation?     @relation(fields: [idImputation], references: [idImputation])
+    serviceProvider   ServiceProvider @relation(fields: [idServiceProvider], references: [idServiceProvider])
+    childrequests     ChildRequest    @relation(fields: [idChildRequest], references: [idChildRequest])
+
+    @@index([idImputation], name: "FK_CraneRequests_Imputations")
+    @@index([idServiceProvider], name: "FK_CraneRequests_ServiceProviders")
+    @@map("CraneRequests")
+}
+
+model Driver {
+    idHumanResource   Int            @id
+    licenseNumber     String         @db.NVarChar(50)
+    licenseExpiration DateTime       @db.DateTimeOffset
+    humanresources    humanresources @relation(fields: [idHumanResource], references: [idResource])
+
+    @@map("Drivers")
+}
+
+model equipmentmodels {
+    idEquipmentModel  Int                 @id
+    idResourceType    Int
+    brandName         String              @db.NVarChar(50)
+    name              String              @db.NVarChar(50)
+    maxLoad           Int
+    resourcetypes     resourcetypes       @relation(fields: [idResourceType], references: [idResourceType])
+    equipmentresource equipmentresource[]
+
+    @@index([idResourceType], name: "FK_EquipmentModels_ResourceTypes")
+}
+
+model equipmentresource {
+    idResource       Int             @id
+    idEquipmentModel Int
+    idProvider       Int
+    code             String?         @db.NVarChar(50)
+    plate            String?         @db.NVarChar(50)
+    isActive         Int             @default(1) @db.TinyInt
+    createAt         DateTime        @default(now()) @db.DateTimeOffset
+    updateAt         DateTime        @default(now()) @db.DateTimeOffset
+    equipmentmodels  equipmentmodels @relation(fields: [idEquipmentModel], references: [idEquipmentModel])
+    providers        Provider        @relation(fields: [idProvider], references: [idProvider])
+    resources        resources?
+
+    @@index([idEquipmentModel], name: "FK_EquipmentResource_EquipmentModels")
+    @@index([idProvider], name: "FK_EquipmentResource_Providers")
+}
+
+model grouplayoutitems {
+    idGroup      Int
+    idLayoutItem Int
+    groups       groups      @relation(fields: [idGroup], references: [idGroup])
+    layoutitems  layoutitems @relation(fields: [idLayoutItem], references: [idLayoutItem])
+
+    @@id([idGroup, idLayoutItem])
+    @@index([idLayoutItem], name: "FK_GroupLayoutItems_LayoutItems")
+}
+
+model grouppermissions {
+    idGroup      Int
+    idPermission Int
+    groups       groups      @relation(fields: [idGroup], references: [idGroup])
+    permissions  permissions @relation(fields: [idPermission], references: [idPermission])
+
+    @@id([idGroup, idPermission])
+    @@index([idPermission], name: "FK_GroupPermissions_Permissions")
+}
+
+model groups {
+    idGroup          Int                @id
+    code             String             @db.NVarChar(50)
+    description      String             @db.NVarChar(200)
+    isActive         Int                @default(1) @db.TinyInt
+    createAt         DateTime           @default(now()) @db.DateTimeOffset
+    updateAt         DateTime           @default(now()) @db.DateTimeOffset
+    grouplayoutitems grouplayoutitems[]
+    grouppermissions grouppermissions[]
+    usergroups       usergroups[]
+}
+
+model humanresources {
+    idResource Int        @id
+    idProfile  Int
+    profile    profile    @relation(fields: [idProfile], references: [idProfile])
+    drivers    Driver?
+    resources  resources?
+
+    @@index([idProfile], name: "FK_HumanResources_Profile1")
+}
+
+model Imputation {
+    idImputation     Int             @id
+    idImputationType Int
+    code             String          @db.NVarChar(50)
+    description      String          @db.NVarChar(200)
+    isActive         Int             @default(1) @db.TinyInt
+    createAt         DateTime        @default(now()) @db.DateTimeOffset
+    updateAt         DateTime        @default(now()) @db.DateTimeOffset
+    imputationtypes  imputationtypes @relation(fields: [idImputationType], references: [idImputationType])
+    cranerequests    CraneRequest[]
+
+    @@index([idImputationType], name: "FK_Imputations_ImputationTypes")
+    @@map("Imputations")
+}
+
+model imputationtypes {
+    idImputationType Int          @id
+    code             String       @db.NVarChar(50)
+    description      String       @db.NVarChar(200)
+    isActive         Int          @default(1) @db.TinyInt
+    createAt         DateTime     @default(now()) @db.DateTimeOffset
+    updateAt         DateTime     @default(now()) @db.DateTimeOffset
+    imputations      Imputation[]
+}
+
+model justifications {
+    idJustification Int              @id
+    code            String           @db.NVarChar(50)
+    description     String           @db.NVarChar(200)
+    updateAt        DateTime         @default(now()) @db.DateTimeOffset
+    isActive        Int              @db.TinyInt
+    createAt        DateTime         @default(now()) @db.DateTimeOffset
+    servicerequests ServiceRequest[]
+}
+
+model layoutitems {
+    idLayoutItem       Int                @id
+    idLayoutItemParent Int
+    name               String             @db.NVarChar(50)
+    path               String             @db.NVarChar(200)
+    iconName           String             @db.NVarChar(50)
+    isActive           Int                @default(1) @db.TinyInt
+    createAt           DateTime           @default(now()) @db.DateTimeOffset
+    updateAt           DateTime           @default(now()) @db.DateTimeOffset
+    layoutitems        layoutitems        @relation("layoutitemsTolayoutitems_idLayoutItemParent", fields: [idLayoutItemParent], references: [idLayoutItem])
+    grouplayoutitems   grouplayoutitems[]
+    other_layoutitems  layoutitems[]      @relation("layoutitemsTolayoutitems_idLayoutItemParent")
+
+    @@index([idLayoutItemParent], name: "FK_LayoutItems_LayoutItems1")
+}
+
+model LiftingPlan {
+    idChildRequest          Int           @id
+    maxAngle                Int
+    worstCapacity           Int
+    maxHeight               Int
+    maxWeight               Int
+    accessoryWeight         Int
+    elementsWeight          Int
+    totalWeight             Int
+    totalWeightSafetyFactor Int
+    utilizationFactor       Int
+    isActive                Int           @default(1) @db.TinyInt
+    cranerequests           CraneRequest?
+}
+
+model permissions {
+    idPermission     Int                @id
+    code             String             @db.NVarChar(50)
+    isActive         Int                @default(1) @db.TinyInt
+    createAt         DateTime           @default(now()) @db.DateTimeOffset
+    updateAt         DateTime           @default(now()) @db.DateTimeOffset
+    grouppermissions grouppermissions[]
+}
+
+model profile {
+    idProfile        Int                @id
+    identification   String             @db.NVarChar(50)
+    firstName        String             @db.NVarChar(200)
+    lastName         String             @db.NVarChar(200)
+    email            String?            @db.NVarChar(1000)
+    address          String?            @db.NVarChar(200)
+    phone            String?            @db.NVarChar(50)
+    humanresources   humanresources[]
+    providerprofiles providerprofiles[]
+    user             users?
+}
+
+model providerprofiles {
+    idProvider Int
+    idProfile  Int
+    profile    profile  @relation(fields: [idProfile], references: [idProfile])
+    providers  Provider @relation(fields: [idProvider], references: [idProvider])
+
+    @@id([idProvider, idProfile])
+    @@index([idProfile], name: "FK_ProviderProfiles_Profile")
+}
+
+model Provider {
+    idProvider        Int                 @id
+    name              String              @db.NVarChar(50)
+    description       String              @db.NVarChar(200)
+    email             String?             @db.NVarChar(1000)
+    address           String?             @db.NVarChar(200)
+    phone             String?             @db.NVarChar(50)
+    isActive          Int                 @default(1) @db.TinyInt
+    createAt          DateTime            @default(now()) @db.DateTimeOffset
+    updateAt          DateTime            @default(now()) @db.DateTimeOffset
+    equipmentresource equipmentresource[]
+    providerprofiles  providerprofiles[]
+    providerservices  providerservices[]
+    ChildRequest      ChildRequest[]
+
+    @@map("Providers")
+}
+
+model providerservices {
+    idProvider Int
+    idService  Int
+    providers  Provider @relation(fields: [idProvider], references: [idProvider])
+    services   Service  @relation(fields: [idService], references: [idService])
+
+    @@id([idProvider, idService])
+    @@index([idService], name: "FK_ProviderServices_Services")
+}
+
+model providertasks {
+    idProviderTask Int      @id
+    code           String   @db.NVarChar(50)
+    description    String   @db.NVarChar(200)
+    isActive       Int      @db.TinyInt
+    createAt       DateTime @default(now()) @db.DateTimeOffset
+    updateAt       DateTime @default(now()) @db.DateTimeOffset
+}
+
+model requestevents {
+    idRequestEvent     Int                  @id
+    code               String               @db.NVarChar(50)
+    requesttransitions requesttransitions[]
+}
+
+model Request {
+    idRequest     Int            @id
+    idCreator     Int
+    idPetitioner  Int
+    description   String         @db.NVarChar(200)
+    startDateTime DateTime       @db.DateTimeOffset
+    endDateTime   DateTime       @db.DateTimeOffset
+    isActive      Int            @db.TinyInt
+    createAt      DateTime       @default(now()) @db.DateTimeOffset
+    updateAt      DateTime       @default(now()) @db.DateTimeOffset
+    location      String?        @db.Char(10)
+    childRequests ChildRequest[]
+
+    @@map("Requests")
+}
+
+model RequestStateHistory {
+    idRequestStateHistory Int          @id
+    idChildRequest        Int
+    childrequests         ChildRequest @relation(fields: [idChildRequest], references: [idChildRequest])
+
+
+    @@index([idChildRequest], name: "FK_RequestStateHistories_ChildRequests")
+    @@map("RequestStateHistories")
+}
+
+model RequestState {
+    idRequestState                                                          Int                  @id
+    name                                                                    String               @db.NVarChar(50)
+    iconName                                                                String?              @db.NVarChar(50)
+    iconColor                                                               String?              @db.NVarChar(50)
+    childrequests                                                           ChildRequest[]
+    requesttransitions_requeststatesTorequesttransitions_idRequestStateFrom requesttransitions[] @relation("requeststatesTorequesttransitions_idRequestStateFrom")
+    requesttransitions_requeststatesTorequesttransitions_idRequestStateTo   requesttransitions[] @relation("requeststatesTorequesttransitions_idRequestStateTo")
+
+    @@map("RequestStates")
+}
+
+model requesttransitions {
+    idRequestTransition                                                Int            @id
+    idRequestEvent                                                     Int?
+    idRequestStateFrom                                                 Int
+    idRequestStateTo                                                   Int
+    requestevents                                                      requestevents? @relation(fields: [idRequestEvent], references: [idRequestEvent])
+    requeststates_requeststatesTorequesttransitions_idRequestStateFrom RequestState   @relation("requeststatesTorequesttransitions_idRequestStateFrom", fields: [idRequestStateFrom], references: [idRequestState])
+    requeststates_requeststatesTorequesttransitions_idRequestStateTo   RequestState   @relation("requeststatesTorequesttransitions_idRequestStateTo", fields: [idRequestStateTo], references: [idRequestState])
+
+    @@index([idRequestEvent], name: "FK_RequestTransitions_RequestEvents")
+    @@index([idRequestStateFrom], name: "FK_RequestTransitions_RequestStates")
+    @@index([idRequestStateTo], name: "FK_RequestTransitions_RequestStates1")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model requiredresources {
+    idRequiredResource Int
+    idResourceType     Int
+
+    @@ignore
+}
+
+model ResourceRequest {
+    idResourceRequest Int           @id
+    idChildRequest    Int
+    idResourceType    Int
+    idResource        Int?
+    isActive          Int           @db.TinyInt
+    createAt          DateTime      @default(now()) @db.DateTimeOffset
+    updateAt          DateTime      @default(now()) @db.DateTimeOffset
+    childrequests     ChildRequest  @relation(fields: [idChildRequest], references: [idChildRequest])
+    resources         resources?    @relation(fields: [idResource], references: [idResource])
+    resourcetypes     resourcetypes @relation(fields: [idResourceType], references: [idResourceType])
+
+    @@index([idChildRequest], name: "FK_ResourceRequests_ChildRequests")
+    @@index([idResourceType], name: "FK_ResourceRequests_ResourceTypes")
+    @@index([idResource], name: "FK_ResourceRequests_Resources")
+    @@map("ResourceRequests")
+}
+
+model resources {
+    idResource        Int               @id
+    idResourceType    Int?
+    humanresources    humanresources    @relation(fields: [idResource], references: [idResource])
+    equipmentresource equipmentresource @relation(fields: [idResource], references: [idResource])
+    resourcerequests  ResourceRequest[]
+}
+
+model resourcetypes {
+    idResourceType   Int                @id
+    name             String             @db.NVarChar(50)
+    isActive         Int                @default(1) @db.TinyInt
+    createAt         DateTime           @default(now()) @db.DateTimeOffset
+    updateAt         DateTime           @default(now()) @db.DateTimeOffset
+    equipmentmodels  equipmentmodels[]
+    resourcerequests ResourceRequest[]
+    serviceresources serviceresources[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sapimputationlog {
+    idSapImputationLog Int
+    idEnvioASap        Int
+
+    @@ignore
+}
+
+model sapimputations {
+    idSapImputation Int      @id
+    idRequest       Int
+    serviceCode     String   @db.NVarChar(50)
+    imputationType  String   @db.NVarChar(50)
+    imputation      String   @db.NVarChar(50)
+    value           Int
+    isSuccessful    Int      @default(0) @db.TinyInt
+    retries         Int      @default(0)
+    createAt        DateTime @default(now()) @db.DateTimeOffset
+    updateAt        DateTime @default(now()) @db.DateTimeOffset
+}
+
+model servicecodes {
+    idServiceCode Int      @id
+    idService     Int
+    code          String   @db.NVarChar(50)
+    description   String   @db.NVarChar(200)
+    unit          String   @db.Char(2)
+    isActive      Int      @default(1) @db.TinyInt
+    createAt      DateTime @default(now()) @db.DateTimeOffset
+    updateAt      DateTime @default(now()) @db.DateTimeOffset
+    services      Service  @relation(fields: [idService], references: [idService])
+
+    @@index([idService], name: "FK_ServiceCodes_Services")
+}
+
+model ServiceProvider {
+    idServiceProvider Int            @id
+    name              String         @db.NVarChar(50)
+    isActive          Int            @default(1) @db.TinyInt
+    createAt          DateTime       @default(now()) @db.DateTimeOffset
+    updateAt          DateTime       @default(now()) @db.DateTimeOffset
+    cranerequests     CraneRequest[]
+
+    @@map("ServiceProviders")
+}
+
+model ServiceRequest {
+    idChildRequest  Int             @id
+    idJustification Int?
+    location        String          @db.NVarChar(50)
+    childrequests   ChildRequest    @relation(fields: [idChildRequest], references: [idChildRequest])
+    justifications  justifications? @relation(fields: [idJustification], references: [idJustification])
+
+    @@index([idJustification], name: "FK_ServiceRequests_Justifications")
+    @@map("ServiceRequests")
+}
+
+model serviceresources {
+    idService      Int
+    idResourceType Int
+    quantity       Int
+    isActive       Int           @default(1) @db.TinyInt
+    createAt       DateTime      @default(now()) @db.DateTimeOffset
+    updateAt       DateTime      @default(now()) @db.DateTimeOffset
+    resourcetypes  resourcetypes @relation(fields: [idResourceType], references: [idResourceType])
+    services       Service       @relation(fields: [idService], references: [idService])
+
+    @@id([idService, idResourceType])
+    @@index([idResourceType], name: "FK_ServiceResources_ResourceTypes")
+}
+
+model Service {
+    idService        Int                @id
+    name             String             @db.NVarChar(50)
+    idOptionalCode   Int?
+    isCodeMandatory  Int                @db.TinyInt
+    isActive         Int                @default(1) @db.TinyInt
+    createAt         DateTime           @default(now()) @db.DateTimeOffset
+    updateAt         DateTime           @default(now()) @db.DateTimeOffset
+    childrequests    ChildRequest[]
+    providerservices providerservices[]
+    servicecodes     servicecodes[]
+    serviceresources serviceresources[]
+
+    @@map("Services")
+}
+
+model usergroups {
+    idUser  Int
+    idGroup Int
+    groups  groups @relation(fields: [idGroup], references: [idGroup])
+    users   users  @relation(fields: [idUser], references: [idUser])
+
+    @@id([idUser, idGroup])
+    @@index([idGroup], name: "FK_UserGroups_Groups")
+}
+
+model users {
+    idUser       Int          @id @default(autoincrement())
+    idProfile    Int
+    username     String       @db.NVarChar(200)
+    passwordHash String       @db.NVarChar(200)
+    isActive     Int          @default(1) @db.TinyInt
+    createAt     DateTime     @default(now()) @db.DateTimeOffset
+    updateAt     DateTime     @default(now()) @db.DateTimeOffset
+    profile      profile      @relation(fields: [idProfile], references: [idProfile])
+    usergroups   usergroups[]
+
+    @@index([idProfile], name: "FK_Users_Profile1")
+}
+
+model workreportconfirmations {
+    idWorkOrderConfirmation   Int        @id
+    idWorkReport              Int
+    serviceCode               String     @db.NVarChar(50)
+    serviceCodeDescription    String     @db.NVarChar(200)
+    providerTask              String     @db.NVarChar(50)
+    providerTaskDescription   String     @db.NVarChar(200)
+    imputationType            String     @db.NVarChar(50)
+    imputationTypeDescription String     @db.NVarChar(200)
+    imputation                String     @db.NVarChar(50)
+    imputationDescription     String     @db.NVarChar(200)
+    value                     Int
+    comments                  String?    @db.NVarChar(1000)
+    isActive                  Int        @db.TinyInt
+    createAt                  DateTime   @default(now()) @db.DateTimeOffset
+    updateAt                  DateTime   @default(now()) @db.DateTimeOffset
+    workreports               WorkReport @relation(fields: [idWorkReport], references: [idWorkReport])
+
+    @@index([idWorkReport], name: "FK_WorkReportConfirmations_WorkReports")
+}
+
+model WorkReport {
+    idWorkReport            Int                       @id
+    idChildRequest          Int
+    serviceCode             String                    @db.NVarChar(50)
+    serviceCodeDescription  String                    @db.NVarChar(200)
+    providerTask            String                    @db.NVarChar(50)
+    providerTaskDescription String                    @db.NVarChar(200)
+    startLocation           String?                   @db.NVarChar(50)
+    endLocation             String?                   @db.NVarChar(50)
+    value                   Int
+    unit                    String                    @db.Char(2)
+    comments                String?                   @db.NVarChar(1000)
+    isActive                Int                       @db.TinyInt
+    createAt                DateTime                  @default(now()) @db.DateTimeOffset
+    updateAt                DateTime                  @default(now()) @db.DateTimeOffset
+    childrequests           ChildRequest              @relation(fields: [idChildRequest], references: [idChildRequest])
+    workreportconfirmations workreportconfirmations[]
+
+    @@index([idChildRequest], name: "FK_WorkReports_ChildRequests")
+    @@map("WorkReports")
+}

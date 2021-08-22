@@ -1,16 +1,16 @@
 import {
-  createPhotoDetail,
-  CreatePhotoParams,
-  createPhotoList,
-  UpdatePhotoParams,
-  IPhotoDetail,
-  IPhotoList
+  buildPhotoDetailDto,
+  CreatePhotoDto,
+  buildPhotoListDto,
+  UpdatePhotoDto,
+  PhotoDetailDto,
+  PhotoListDto
 } from "../dtos"
 import { Photo, prisma } from "../models"
 import { NotFoundError } from "../errors/MessageError"
 
 class PhotoService {
-  async getPhotoDetail(id: number): Promise<IPhotoDetail> {
+  async getPhotoDetail(id: number): Promise<PhotoDetailDto> {
     const photo = await prisma.photo.findFirst({
       where: {
         id: id
@@ -22,10 +22,10 @@ class PhotoService {
       throw new NotFoundError("Photo not found!")
     }
 
-    return createPhotoDetail(photo, photo.user.id, photo.user.username)
+    return buildPhotoDetailDto(photo, photo.user.id, photo.user.username)
   }
 
-  async updatePhoto(id: number, item: UpdatePhotoParams): Promise<IPhotoDetail> {
+  async updatePhoto(id: number, item: UpdatePhotoDto): Promise<PhotoDetailDto> {
     const photo = await prisma.photo.update({
       where: { id: id },
       data: {
@@ -34,10 +34,14 @@ class PhotoService {
       include: { user: true }
     })
 
-    return createPhotoDetail(photo, photo.user.id, photo.user.username)
+    return buildPhotoDetailDto(photo, photo.user.id, photo.user.username)
   }
 
-  async getPhotoList(page = 1, perPage = 10, username: string | null = null): Promise<IPhotoList> {
+  async getPhotoList(
+    page = 1,
+    perPage = 10,
+    username: string | null = null
+  ): Promise<PhotoListDto> {
     const skip = perPage * (page - 1)
 
     const rowsAndCount = await prisma.$transaction([
@@ -49,10 +53,10 @@ class PhotoService {
       prisma.photo.count({ where: { user: { username: username || undefined } } })
     ])
 
-    return createPhotoList(rowsAndCount[0], page, perPage, rowsAndCount[1])
+    return buildPhotoListDto(rowsAndCount[0], page, perPage, rowsAndCount[1])
   }
 
-  async createPhoto(data: CreatePhotoParams): Promise<Photo> {
+  async createPhoto(data: CreatePhotoDto): Promise<Photo> {
     return await prisma.photo.create({
       data: {
         url: data.url,

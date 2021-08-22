@@ -2,19 +2,18 @@ import { expect } from "chai"
 import { agent as request } from "supertest"
 import { paths } from "../../generated/schema"
 
-type IAuthGetResponse =
+type IPostAuthLoginResp =
   paths["/auth/login"]["post"]["responses"]["200"]["content"]["application/json"]
 
-type IUserGetResponse =
-  paths["/api/v1/users"]["get"]["responses"]["200"]["content"]["application/json"]
+type IGetUserResp = paths["/api/v1/users"]["get"]["responses"]["200"]["content"]["application/json"]
 
 export function usersDescribeViewer(app) {
-  let resultLogin: IAuthGetResponse
+  let resultLogin: IPostAuthLoginResp
 
   before(async () => {
     // Auth
     const res = await request(app).post("/auth/login").send({ password: "", username: "viewer" })
-    resultLogin = res.body as IAuthGetResponse
+    resultLogin = res.body as IPostAuthLoginResp
     expect(resultLogin.refreshToken).not.to.be.empty
     expect(resultLogin.accessToken).not.to.be.empty
   })
@@ -28,7 +27,7 @@ export function usersDescribeViewer(app) {
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty
 
-    const result = res.body as IUserGetResponse
+    const result = res.body as IGetUserResp
 
     expect(result.page).to.eq(2)
     expect(result.perPage).to.eq(1)
@@ -61,12 +60,12 @@ export function usersDescribeViewer(app) {
 }
 
 export function usersDescribeAdmin(app) {
-  let resultLogin: IAuthGetResponse
+  let resultLogin: IPostAuthLoginResp
 
   before(async () => {
     // Auth
     const res = await request(app).post("/auth/login").send({ password: "", username: "admin" })
-    resultLogin = res.body as IAuthGetResponse
+    resultLogin = res.body as IPostAuthLoginResp
     expect(resultLogin.refreshToken).not.to.be.empty
     expect(resultLogin.accessToken).not.to.be.empty
     return
@@ -81,7 +80,7 @@ export function usersDescribeAdmin(app) {
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty
 
-    const result = res.body as IUserGetResponse
+    const result = res.body as IGetUserResp
 
     expect(result.page).to.eq(2)
     expect(result.perPage).to.eq(1)

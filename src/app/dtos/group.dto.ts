@@ -1,30 +1,32 @@
 import { Group, Permission } from "../models"
 import { Paginate } from "./paginate.dto"
 
-export interface CreateGroupParams {
+export type CreateGroupDto = {
   name: string
   description: string
   permissions?: { name: string }[]
 }
 
-export interface UpdateGroupParams {
+export type UpdateGroupDto = {
   description?: string
   isActive?: boolean
   permissions?: { name: string }[]
 }
 
-export type IGroupList = Paginate<Group>
+export type GroupListDto = Paginate<Group>
 
-export type IGroupDetail = Group & {
+export type GroupDto = Group
+
+export type GroupDetailDto = Group & {
   permissions: Permission[]
 }
 
-export function createGroupList(
+export function buildGroupListDto(
   groups: Group[],
   page: number,
   perPage: number,
   total: number
-): IGroupList {
+): GroupListDto {
   const rows = groups.map((p) => {
     return { ...p, passwordHash: undefined } as unknown as Group
   })
@@ -32,14 +34,9 @@ export function createGroupList(
   return { rows, page, perPage, total }
 }
 
-export function createGroupDetail(group: Group, permissions: Permission[]): IGroupDetail {
+export function buildGroupDetailDto(group: Group, permissions: Permission[]): GroupDetailDto {
   return {
-    id: group.id,
-    name: group.name,
-    description: group.description,
-    updatedAt: group.updatedAt,
-    createAt: group.createAt,
-    isActive: group.isActive,
+    ...group,
     permissions: permissions
-  } as IGroupDetail
+  } as GroupDetailDto
 }

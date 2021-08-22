@@ -1,12 +1,12 @@
 import { Controller, Get, Path, Delete, Post, Put } from "tsoa"
 import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
 import { permissionService } from "../../services"
-import { Permission } from "../../models"
 import {
-  CreatePermissionParams,
-  UpdatePermissionParams,
-  IPermissionDetail,
-  IPermissionList
+  CreatePermissionDto,
+  UpdatePermissionDto,
+  PermissionDetailDto,
+  PermissionListDto,
+  PermissionDto
 } from "../../dtos"
 
 @Route("api/v1/users/permissions")
@@ -14,7 +14,7 @@ import {
 export class PermissionController extends Controller {
   @Get("{id}")
   @Security("jwt", ["permissions:read"])
-  public async getPermissionDetail(@Path() id: number): Promise<IPermissionDetail> {
+  public async getPermissionDetail(@Path() id: number): Promise<PermissionDetailDto> {
     return await permissionService.getPermissionDetail(id)
   }
 
@@ -22,8 +22,8 @@ export class PermissionController extends Controller {
   @Security("jwt", ["permissions:update"])
   public async updatePermission(
     @Path() id: number,
-    @Body() item: UpdatePermissionParams
-  ): Promise<Permission> {
+    @Body() item: UpdatePermissionDto
+  ): Promise<PermissionDto> {
     return await permissionService.updatePermission(id, item)
   }
 
@@ -34,21 +34,21 @@ export class PermissionController extends Controller {
     @Query() perPage = 10,
     @Query() username: string | null = null,
     @Query() isActive = true
-  ): Promise<IPermissionList> {
+  ): Promise<PermissionListDto> {
     return await permissionService.getPermissionList(page, perPage, username, isActive)
   }
 
   @SuccessResponse("201", "Created")
   @Post()
   @Security("jwt", ["permissions:create"])
-  public async createPermission(@Body() item: CreatePermissionParams): Promise<Permission> {
+  public async createPermission(@Body() item: CreatePermissionDto): Promise<PermissionDto> {
     this.setStatus(201)
     return await permissionService.createPermission(item)
   }
 
   @Delete("{id}")
   @Security("jwt", ["permissions:delete"])
-  public async deletePermission(@Path() id: number): Promise<Permission> {
+  public async deletePermission(@Path() id: number): Promise<PermissionDto> {
     return await permissionService.deletePermission(id)
   }
 }

@@ -122,7 +122,7 @@
 				"type": "object",
 				"description": "Model Group"
 			},
-			"IUserDetail": {
+			"UserDetailDto": {
 				"allOf": [
 					{
 						"$ref": "#/components/schemas/User"
@@ -156,6 +156,9 @@
 						"type": "object"
 					}
 				]
+			},
+			"UserDto": {
+				"$ref": "#/components/schemas/User"
 			},
 			"Permission": {
 				"properties": {
@@ -193,7 +196,7 @@
 				"type": "object",
 				"description": "Model Permission"
 			},
-			"IGroupDetail": {
+			"GroupDetailDto": {
 				"allOf": [
 					{
 						"$ref": "#/components/schemas/Group"
@@ -214,14 +217,8 @@
 					}
 				]
 			},
-			"UpdateGroupParams": {
+			"UpdateGroupDto": {
 				"properties": {
-					"description": {
-						"type": "string"
-					},
-					"isActive": {
-						"type": "boolean"
-					},
 					"permissions": {
 						"items": {
 							"properties": {
@@ -235,10 +232,15 @@
 							"type": "object"
 						},
 						"type": "array"
+					},
+					"isActive": {
+						"type": "boolean"
+					},
+					"description": {
+						"type": "string"
 					}
 				},
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			},
 			"Paginate_Group_": {
 				"properties": {
@@ -270,17 +272,11 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IGroupList": {
+			"GroupListDto": {
 				"$ref": "#/components/schemas/Paginate_Group_"
 			},
-			"CreateGroupParams": {
+			"CreateGroupDto": {
 				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string"
-					},
 					"permissions": {
 						"items": {
 							"properties": {
@@ -294,29 +290,39 @@
 							"type": "object"
 						},
 						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"description"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"IPermissionDetail": {
-				"$ref": "#/components/schemas/Permission"
-			},
-			"UpdatePermissionParams": {
-				"properties": {
+					},
 					"description": {
 						"type": "string"
 					},
-					"isActive": {
-						"type": "boolean"
+					"name": {
+						"type": "string"
 					}
 				},
-				"type": "object",
-				"additionalProperties": false
+				"required": [
+					"description",
+					"name"
+				],
+				"type": "object"
+			},
+			"GroupDto": {
+				"$ref": "#/components/schemas/Group"
+			},
+			"PermissionDetailDto": {
+				"$ref": "#/components/schemas/Permission"
+			},
+			"PermissionDto": {
+				"$ref": "#/components/schemas/Permission"
+			},
+			"UpdatePermissionDto": {
+				"properties": {
+					"isActive": {
+						"type": "boolean"
+					},
+					"description": {
+						"type": "string"
+					}
+				},
+				"type": "object"
 			},
 			"Paginate_Permission_": {
 				"properties": {
@@ -348,25 +354,24 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IPermissionList": {
+			"PermissionListDto": {
 				"$ref": "#/components/schemas/Paginate_Permission_"
 			},
-			"CreatePermissionParams": {
+			"CreatePermissionDto": {
 				"properties": {
-					"name": {
+					"description": {
 						"type": "string"
 					},
-					"description": {
+					"name": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"name"
 				],
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			},
-			"IPhotoDetail": {
+			"PhotoDetailDto": {
 				"allOf": [
 					{
 						"$ref": "#/components/schemas/Photo"
@@ -397,7 +402,7 @@
 					}
 				]
 			},
-			"UpdatePhotoParams": {
+			"UpdatePhotoDto": {
 				"properties": {
 					"url": {
 						"type": "string"
@@ -406,8 +411,7 @@
 				"required": [
 					"url"
 				],
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			},
 			"Paginate_Photo_": {
 				"properties": {
@@ -439,38 +443,42 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IPhotoList": {
+			"PhotoListDto": {
 				"$ref": "#/components/schemas/Paginate_Photo_"
 			},
-			"CreatePhotoParams": {
+			"PhotoDto": {
+				"$ref": "#/components/schemas/Photo"
+			},
+			"CreatePhotoDto": {
 				"properties": {
-					"username": {
+					"url": {
 						"type": "string"
 					},
-					"url": {
+					"username": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"username",
-					"url"
+					"url",
+					"username"
 				],
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			},
-			"UpdateUserParams": {
+			"UpdateUserDto": {
 				"properties": {
-					"fullName": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					},
-					"isActive": {
-						"type": "boolean"
+					"photos": {
+						"items": {
+							"properties": {
+								"url": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"url"
+							],
+							"type": "object"
+						},
+						"type": "array"
 					},
 					"groups": {
 						"items": {
@@ -486,23 +494,20 @@
 						},
 						"type": "array"
 					},
-					"photos": {
-						"items": {
-							"properties": {
-								"url": {
-									"type": "string"
-								}
-							},
-							"required": [
-								"url"
-							],
-							"type": "object"
-						},
-						"type": "array"
+					"isActive": {
+						"type": "boolean"
+					},
+					"password": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"fullName": {
+						"type": "string"
 					}
 				},
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			},
 			"Paginate_User_": {
 				"properties": {
@@ -534,27 +539,27 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IUserList": {
+			"UserListDto": {
 				"$ref": "#/components/schemas/Paginate_User_"
 			},
-			"CreateUserParams": {
+			"CreateUserDto": {
 				"properties": {
-					"username": {
+					"email": {
 						"type": "string"
 					},
 					"fullName": {
 						"type": "string"
 					},
-					"email": {
-						"type": "string"
+					"username": {
+						"type": "string",
+						"minLength": 1
 					}
 				},
 				"required": [
-					"username",
-					"fullName"
+					"fullName",
+					"username"
 				],
-				"type": "object",
-				"additionalProperties": false
+				"type": "object"
 			}
 		},
 		"securitySchemes": {
@@ -588,7 +593,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IUserDetail"
+									"$ref": "#/components/schemas/UserDetailDto"
 								}
 							}
 						}
@@ -670,7 +675,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/UserDto"
 								}
 							}
 						}
@@ -805,7 +810,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IGroupDetail"
+									"$ref": "#/components/schemas/GroupDetailDto"
 								}
 							}
 						}
@@ -841,7 +846,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IGroupDetail"
+									"$ref": "#/components/schemas/GroupDetailDto"
 								}
 							}
 						}
@@ -873,7 +878,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdateGroupParams"
+								"$ref": "#/components/schemas/UpdateGroupDto"
 							}
 						}
 					}
@@ -887,7 +892,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Group"
+									"$ref": "#/components/schemas/GroupDto"
 								}
 							}
 						}
@@ -925,7 +930,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IGroupList"
+									"$ref": "#/components/schemas/GroupListDto"
 								}
 							}
 						}
@@ -975,7 +980,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Group"
+									"$ref": "#/components/schemas/GroupDetailDto"
 								}
 							}
 						}
@@ -997,7 +1002,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CreateGroupParams"
+								"$ref": "#/components/schemas/CreateGroupDto"
 							}
 						}
 					}
@@ -1013,7 +1018,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IPermissionDetail"
+									"$ref": "#/components/schemas/PermissionDetailDto"
 								}
 							}
 						}
@@ -1049,7 +1054,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Permission"
+									"$ref": "#/components/schemas/PermissionDto"
 								}
 							}
 						}
@@ -1081,7 +1086,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdatePermissionParams"
+								"$ref": "#/components/schemas/UpdatePermissionDto"
 							}
 						}
 					}
@@ -1095,7 +1100,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Permission"
+									"$ref": "#/components/schemas/PermissionDto"
 								}
 							}
 						}
@@ -1133,7 +1138,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IPermissionList"
+									"$ref": "#/components/schemas/PermissionListDto"
 								}
 							}
 						}
@@ -1198,7 +1203,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Permission"
+									"$ref": "#/components/schemas/PermissionDto"
 								}
 							}
 						}
@@ -1220,7 +1225,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CreatePermissionParams"
+								"$ref": "#/components/schemas/CreatePermissionDto"
 							}
 						}
 					}
@@ -1236,7 +1241,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IPhotoDetail"
+									"$ref": "#/components/schemas/PhotoDetailDto"
 								}
 							}
 						}
@@ -1270,7 +1275,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IPhotoDetail"
+									"$ref": "#/components/schemas/PhotoDetailDto"
 								}
 							}
 						}
@@ -1300,7 +1305,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdatePhotoParams"
+								"$ref": "#/components/schemas/UpdatePhotoDto"
 							}
 						}
 					}
@@ -1316,7 +1321,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IPhotoList"
+									"$ref": "#/components/schemas/PhotoListDto"
 								}
 							}
 						}
@@ -1370,7 +1375,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Photo"
+									"$ref": "#/components/schemas/PhotoDto"
 								}
 							}
 						}
@@ -1390,7 +1395,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CreatePhotoParams"
+								"$ref": "#/components/schemas/CreatePhotoDto"
 							}
 						}
 					}
@@ -1406,7 +1411,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IUserDetail"
+									"$ref": "#/components/schemas/UserDetailDto"
 								}
 							}
 						}
@@ -1440,7 +1445,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IUserDetail"
+									"$ref": "#/components/schemas/UserDetailDto"
 								}
 							}
 						}
@@ -1473,7 +1478,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdateUserParams"
+								"$ref": "#/components/schemas/UpdateUserDto"
 							}
 						}
 					}
@@ -1487,7 +1492,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/UserDto"
 								}
 							}
 						}
@@ -1526,7 +1531,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IUserList"
+									"$ref": "#/components/schemas/UserListDto"
 								}
 							}
 						}
@@ -1583,12 +1588,13 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/UserDto"
 								}
 							}
 						}
 					}
 				},
+				"description": "Hola mundo",
 				"tags": [
 					"Users"
 				],
@@ -1606,7 +1612,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CreateUserParams"
+								"$ref": "#/components/schemas/CreateUserDto"
 							}
 						}
 					}

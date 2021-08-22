@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Post, Route, Request, Security, Tags, Query } from "tsoa"
 import { Response, SuccessResponse } from "tsoa"
 import { Request as ExpReq } from "express"
-import { User } from "../../models"
-import { IUserDetail } from "../../dtos"
+import { UserDetailDto, UserDto } from "../../dtos"
 import { UnauthorizedError } from "../../errors/MessageError"
 import { IAuthData, authService, userService } from "../../services"
 
@@ -11,7 +10,7 @@ import { IAuthData, authService, userService } from "../../services"
 export class AuthController extends Controller {
   @Get("me")
   @Security("jwt")
-  public async getUser(@Request() req: { user: IAuthData }): Promise<IUserDetail> {
+  public async getUser(@Request() req: { user: IAuthData }): Promise<UserDetailDto> {
     return await userService.getUserDetail(req.user.id)
   }
 
@@ -31,7 +30,7 @@ export class AuthController extends Controller {
       oldpassword: string
       newpassword: string
     }
-  ): Promise<User> {
+  ): Promise<UserDto> {
     const userId = req?.user?.id
     return await authService.changePassword(userId, pass.oldpassword, pass.newpassword)
   }

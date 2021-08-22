@@ -1,16 +1,17 @@
 import {
-  IGroupDetail,
-  IGroupList,
-  createGroupList,
-  createGroupDetail,
-  CreateGroupParams,
-  UpdateGroupParams
+  GroupDetailDto,
+  GroupListDto,
+  buildGroupListDto,
+  buildGroupDetailDto,
+  CreateGroupDto,
+  UpdateGroupDto,
+  GroupDto
 } from "../dtos"
-import { Group, prisma } from "../models"
+import { prisma } from "../models"
 import { NotFoundError } from "../errors/MessageError"
 
 class GroupService {
-  async getGroupDetail(id: number): Promise<IGroupDetail> {
+  async getGroupDetail(id: number): Promise<GroupDetailDto> {
     const group = await prisma.group.findFirst({
       where: {
         id: id
@@ -24,10 +25,10 @@ class GroupService {
       throw new NotFoundError("Group not found!")
     }
 
-    return createGroupDetail(group, group.permissions)
+    return buildGroupDetailDto(group, group.permissions)
   }
 
-  async updateGroup(id: number, item: UpdateGroupParams): Promise<IGroupDetail> {
+  async updateGroup(id: number, item: UpdateGroupDto): Promise<GroupDetailDto> {
     const group = await prisma.group.update({
       where: { id: id },
       data: {
@@ -48,27 +49,27 @@ class GroupService {
       console.log("toDelete", toDelete)
       console.log("toInsert", toInsert)
 
-      const prismaToDelete = toDelete.map((pName) =>
+      const prismaToDisconnect = toDelete.map((pName) =>
         prisma.group.update({
           where: { id },
           data: { permissions: { disconnect: { name: pName } } }
         })
       )
 
-      const prismaToInsert = toInsert.map((pName) =>
+      const prismaToConnect = toInsert.map((pName) =>
         prisma.group.update({
           where: { id },
           data: { permissions: { connect: { name: pName } } }
         })
       )
 
-      await prisma.$transaction([...prismaToDelete, ...prismaToInsert])
+      await prisma.$transaction([...prismaToDisconnect, ...prismaToConnect])
     }
 
     return await this.getGroupDetail(id)
   }
 
-  async getGroupList(page = 1, perPage = 10, isActive = true): Promise<IGroupList> {
+  async getGroupList(page = 1, perPage = 10, isActive = true): Promise<GroupListDto> {
     const skip = perPage * (page - 1)
 
     const rowsAndCount = await prisma.$transaction([
@@ -80,14 +81,29 @@ class GroupService {
       prisma.group.count({ where: { isActive: isActive } })
     ])
 
-    return createGroupList(rowsAndCount[0], page, perPage, rowsAndCount[1])
+    return buildGroupListDto(rowsAndCount[0], page, perPage, rowsAndCount[1])
   }
 
-  async createGroup(data: CreateGroupParams): Promise<Group> {
-    return await prisma.group.create({ data: data })
+  async createGroup(data: CreateGroupDto): Promise<GroupDetailDto> {
+    const connectPermissions = data.permissions?.map((p) => {
+      return { name: p.name }
+    })
+
+    const group = await prisma.group.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        permissions: {
+          connect: connectPermissions
+        }
+      },
+      include: { permissions: true }
+    })
+
+    return buildGroupDetailDto(group, group.permissions)
   }
 
-  async deleteGroup(id: number): Promise<Group> {
+  async deleteGroup(id: number): Promise<GroupDto> {
     return await prisma.group.delete({ where: { id } })
   }
 }

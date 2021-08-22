@@ -1,7 +1,6 @@
 import { Controller, Get, Path, Post, Put, Request } from "tsoa"
 import { Body, Query, Route, SuccessResponse, Security, Tags } from "tsoa"
-import { Photo } from "../../models"
-import { CreatePhotoParams, UpdatePhotoParams, IPhotoDetail, IPhotoList } from "../../dtos"
+import { CreatePhotoDto, UpdatePhotoDto, PhotoDetailDto, PhotoListDto, PhotoDto } from "../../dtos"
 import { ForbiddenError } from "../../../app/errors/MessageError"
 import { IAuthData, photoService, authService } from "../../services"
 
@@ -10,7 +9,7 @@ import { IAuthData, photoService, authService } from "../../services"
 export class PhotoController extends Controller {
   @Get("{id}")
   @Security("jwt")
-  public async getPhotoDetail(@Path() id: number): Promise<IPhotoDetail> {
+  public async getPhotoDetail(@Path() id: number): Promise<PhotoDetailDto> {
     return await photoService.getPhotoDetail(id)
   }
 
@@ -19,8 +18,8 @@ export class PhotoController extends Controller {
   public async updatePhoto(
     @Request() req: { user: IAuthData },
     @Path() id: number,
-    @Body() item: UpdatePhotoParams
-  ): Promise<IPhotoDetail> {
+    @Body() item: UpdatePhotoDto
+  ): Promise<PhotoDetailDto> {
     const photo = await photoService.getPhotoDetail(id)
 
     if (!authService.validatePermissions(req.user, ["userAdmin"], photo.user.username)) {
@@ -36,7 +35,7 @@ export class PhotoController extends Controller {
     @Query() page = 1,
     @Query() perPage = 10,
     @Query() username: string | null = null
-  ): Promise<IPhotoList> {
+  ): Promise<PhotoListDto> {
     return await photoService.getPhotoList(page, perPage, username)
   }
 
@@ -45,8 +44,8 @@ export class PhotoController extends Controller {
   @Security("jwt")
   public async createPhoto(
     @Request() req: { user: IAuthData },
-    @Body() item: CreatePhotoParams
-  ): Promise<Photo> {
+    @Body() item: CreatePhotoDto
+  ): Promise<PhotoDto> {
     if (!authService.validatePermissions(req.user, ["userAdmin"], item.username)) {
       throw new ForbiddenError("Logged user can not create photo for another user!")
     }

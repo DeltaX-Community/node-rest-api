@@ -1,8 +1,9 @@
-import { prisma, User } from "../models"
+import { prisma } from "../models"
 import { ForbiddenError, NotFoundError, UnauthorizedError } from "../errors/MessageError"
 import * as bcrypt from "bcrypt"
 import * as jwt from "jsonwebtoken"
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../../config"
+import { UserDto } from "../dtos"
 
 export interface IAuthData {
   id: number
@@ -28,7 +29,7 @@ class AuthService {
     const user = await prisma.user.findFirst({
       where: { username: username },
       include: {
-        userGroups: {
+        groups: {
           include: {
             group: {
               include: {
@@ -44,7 +45,7 @@ class AuthService {
       throw new UnauthorizedError("Username or password are Invalid!")
     }
 
-    const groups = user.userGroups.map((ug) => ug.group)
+    const groups = user.groups.map((ug) => ug.group)
     const permissions = groups.flatMap((g) => g.permissions).filter((p) => !!p)
 
     return {
@@ -60,7 +61,7 @@ class AuthService {
     const user = await prisma.user.findUnique({
       where: { id: id },
       include: {
-        userGroups: {
+        groups: {
           include: {
             group: {
               include: {
@@ -76,7 +77,7 @@ class AuthService {
       throw new NotFoundError("User not found!")
     }
 
-    const groups = user.userGroups.map((ug) => ug.group)
+    const groups = user.groups.map((ug) => ug.group)
     const permissions = groups.flatMap((g) => g.permissions).filter((p) => !!p)
 
     return {
@@ -153,7 +154,7 @@ class AuthService {
     userId: number,
     oldpassword: string,
     newpassword: string
-  ): Promise<User> {
+  ): Promise<UserDto> {
     const user = await prisma.user.findFirst({ where: { id: userId } })
 
     if (!user || !this.veryfyPassword(user.passwordHash, oldpassword)) {

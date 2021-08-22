@@ -52,6 +52,7 @@ export interface paths {
   };
   "/api/v1/users": {
     get: operations["GetUserList"];
+    /** Hola mundo */
     post: operations["CreateUser"];
   };
 }
@@ -87,11 +88,12 @@ export interface components {
       name: string;
       id: number;
     };
-    IUserDetail: components["schemas"]["User"] & {
+    UserDetailDto: components["schemas"]["User"] & {
       permissions: string[];
       groups: components["schemas"]["Group"][];
       photos: components["schemas"]["Photo"][];
     };
+    UserDto: components["schemas"]["User"];
     /** Model Permission */
     Permission: {
       isActive: boolean;
@@ -101,15 +103,15 @@ export interface components {
       name: string;
       id: number;
     };
-    IGroupDetail: components["schemas"]["Group"] & {
+    GroupDetailDto: components["schemas"]["Group"] & {
       permissions: components["schemas"]["Permission"][];
     };
-    UpdateGroupParams: {
-      description?: string;
-      isActive?: boolean;
+    UpdateGroupDto: {
       permissions?: {
         name: string;
       }[];
+      isActive?: boolean;
+      description?: string;
     };
     Paginate_Group_: {
       rows: components["schemas"]["Group"][];
@@ -117,18 +119,20 @@ export interface components {
       perPage: number;
       total: number;
     };
-    IGroupList: components["schemas"]["Paginate_Group_"];
-    CreateGroupParams: {
-      name: string;
-      description: string;
+    GroupListDto: components["schemas"]["Paginate_Group_"];
+    CreateGroupDto: {
       permissions?: {
         name: string;
       }[];
+      description: string;
+      name: string;
     };
-    IPermissionDetail: components["schemas"]["Permission"];
-    UpdatePermissionParams: {
-      description?: string;
+    GroupDto: components["schemas"]["Group"];
+    PermissionDetailDto: components["schemas"]["Permission"];
+    PermissionDto: components["schemas"]["Permission"];
+    UpdatePermissionDto: {
       isActive?: boolean;
+      description?: string;
     };
     Paginate_Permission_: {
       rows: components["schemas"]["Permission"][];
@@ -136,18 +140,18 @@ export interface components {
       perPage: number;
       total: number;
     };
-    IPermissionList: components["schemas"]["Paginate_Permission_"];
-    CreatePermissionParams: {
-      name: string;
+    PermissionListDto: components["schemas"]["Paginate_Permission_"];
+    CreatePermissionDto: {
       description?: string;
+      name: string;
     };
-    IPhotoDetail: components["schemas"]["Photo"] & {
+    PhotoDetailDto: components["schemas"]["Photo"] & {
       user: {
         username: string;
         id: number;
       };
     };
-    UpdatePhotoParams: {
+    UpdatePhotoDto: {
       url: string;
     };
     Paginate_Photo_: {
@@ -156,22 +160,23 @@ export interface components {
       perPage: number;
       total: number;
     };
-    IPhotoList: components["schemas"]["Paginate_Photo_"];
-    CreatePhotoParams: {
-      username: string;
+    PhotoListDto: components["schemas"]["Paginate_Photo_"];
+    PhotoDto: components["schemas"]["Photo"];
+    CreatePhotoDto: {
       url: string;
+      username: string;
     };
-    UpdateUserParams: {
-      fullName?: string;
-      email?: string;
-      password?: string;
-      isActive?: boolean;
-      groups?: {
-        name: string;
-      }[];
+    UpdateUserDto: {
       photos?: {
         url: string;
       }[];
+      groups?: {
+        name: string;
+      }[];
+      isActive?: boolean;
+      password?: string;
+      email?: string;
+      fullName?: string;
     };
     Paginate_User_: {
       rows: components["schemas"]["User"][];
@@ -179,11 +184,11 @@ export interface components {
       perPage: number;
       total: number;
     };
-    IUserList: components["schemas"]["Paginate_User_"];
-    CreateUserParams: {
-      username: string;
-      fullName: string;
+    UserListDto: components["schemas"]["Paginate_User_"];
+    CreateUserDto: {
       email?: string;
+      fullName: string;
+      username: string;
     };
   };
   responses: {};
@@ -199,7 +204,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IUserDetail"];
+          "application/json": components["schemas"]["UserDetailDto"];
         };
       };
     };
@@ -232,7 +237,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["User"];
+          "application/json": components["schemas"]["UserDto"];
         };
       };
     };
@@ -291,7 +296,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IGroupDetail"];
+          "application/json": components["schemas"]["GroupDetailDto"];
         };
       };
     };
@@ -306,13 +311,13 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IGroupDetail"];
+          "application/json": components["schemas"]["GroupDetailDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["UpdateGroupParams"];
+        "application/json": components["schemas"]["UpdateGroupDto"];
       };
     };
   };
@@ -326,7 +331,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Group"];
+          "application/json": components["schemas"]["GroupDto"];
         };
       };
     };
@@ -343,7 +348,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IGroupList"];
+          "application/json": components["schemas"]["GroupListDto"];
         };
       };
     };
@@ -354,13 +359,13 @@ export interface operations {
       /** Created */
       201: {
         content: {
-          "application/json": components["schemas"]["Group"];
+          "application/json": components["schemas"]["GroupDetailDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateGroupParams"];
+        "application/json": components["schemas"]["CreateGroupDto"];
       };
     };
   };
@@ -374,7 +379,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IPermissionDetail"];
+          "application/json": components["schemas"]["PermissionDetailDto"];
         };
       };
     };
@@ -389,13 +394,13 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Permission"];
+          "application/json": components["schemas"]["PermissionDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["UpdatePermissionParams"];
+        "application/json": components["schemas"]["UpdatePermissionDto"];
       };
     };
   };
@@ -409,7 +414,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["Permission"];
+          "application/json": components["schemas"]["PermissionDto"];
         };
       };
     };
@@ -427,7 +432,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IPermissionList"];
+          "application/json": components["schemas"]["PermissionListDto"];
         };
       };
     };
@@ -438,13 +443,13 @@ export interface operations {
       /** Created */
       201: {
         content: {
-          "application/json": components["schemas"]["Permission"];
+          "application/json": components["schemas"]["PermissionDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreatePermissionParams"];
+        "application/json": components["schemas"]["CreatePermissionDto"];
       };
     };
   };
@@ -458,7 +463,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IPhotoDetail"];
+          "application/json": components["schemas"]["PhotoDetailDto"];
         };
       };
     };
@@ -473,13 +478,13 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IPhotoDetail"];
+          "application/json": components["schemas"]["PhotoDetailDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["UpdatePhotoParams"];
+        "application/json": components["schemas"]["UpdatePhotoDto"];
       };
     };
   };
@@ -495,7 +500,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IPhotoList"];
+          "application/json": components["schemas"]["PhotoListDto"];
         };
       };
     };
@@ -506,13 +511,13 @@ export interface operations {
       /** Created */
       201: {
         content: {
-          "application/json": components["schemas"]["Photo"];
+          "application/json": components["schemas"]["PhotoDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreatePhotoParams"];
+        "application/json": components["schemas"]["CreatePhotoDto"];
       };
     };
   };
@@ -526,7 +531,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IUserDetail"];
+          "application/json": components["schemas"]["UserDetailDto"];
         };
       };
     };
@@ -541,13 +546,13 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IUserDetail"];
+          "application/json": components["schemas"]["UserDetailDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["UpdateUserParams"];
+        "application/json": components["schemas"]["UpdateUserDto"];
       };
     };
   };
@@ -561,7 +566,7 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["User"];
+          "application/json": components["schemas"]["UserDto"];
         };
       };
     };
@@ -578,24 +583,25 @@ export interface operations {
       /** Ok */
       200: {
         content: {
-          "application/json": components["schemas"]["IUserList"];
+          "application/json": components["schemas"]["UserListDto"];
         };
       };
     };
   };
+  /** Hola mundo */
   CreateUser: {
     parameters: {};
     responses: {
       /** Created */
       201: {
         content: {
-          "application/json": components["schemas"]["User"];
+          "application/json": components["schemas"]["UserDto"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateUserParams"];
+        "application/json": components["schemas"]["CreateUserDto"];
       };
     };
   };

@@ -1,26 +1,28 @@
 import { Permission } from "../models"
 import { Paginate } from "./paginate.dto"
 
-export interface CreatePermissionParams {
+export type CreatePermissionDto = {
   name: string
   description?: string
 }
 
-export interface UpdatePermissionParams {
+export type UpdatePermissionDto = {
   description?: string
   isActive?: boolean
 }
 
-export type IPermissionList = Paginate<Permission>
+export type PermissionListDto = Paginate<Permission>
 
-export type IPermissionDetail = Permission
+export type PermissionDetailDto = Permission
 
-export function createPermissionList(
+export type PermissionDto = Permission
+
+export function buildPermissionListDto(
   permissions: Permission[],
   page: number,
   perPage: number,
   total: number
-): IPermissionList {
+): PermissionListDto {
   const rows = permissions.map((p) => {
     return { ...p } as unknown as Permission
   })
@@ -28,13 +30,8 @@ export function createPermissionList(
   return { rows, page, perPage, total }
 }
 
-export function createPermissionDetail(permission: Permission): IPermissionDetail {
+export function buildPermissionDetailDto(permission: Permission): PermissionDetailDto {
   return {
-    id: permission.id,
-    name: permission.name,
-    description: permission.description,
-    updatedAt: permission.updatedAt,
-    createAt: permission.createAt,
-    isActive: permission.isActive
-  } as IPermissionDetail
+    ...permission
+  } as PermissionDetailDto
 }

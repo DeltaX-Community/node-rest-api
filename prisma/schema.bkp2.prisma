@@ -1,0 +1,108 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = "mysql://root@127.0.0.1:3306/workshop"
+
+    // provider = "sqlserver"
+    // url      = "sqlserver://localhost:1433;database=a.b.c.d.e.g.h.i.j.k;user=admin;password=admin;trustServerCertificate=true;"
+    // url      = "sqlserver://db.testing.gicom.ar:63153;database=SGM_QA_2;user=sa;password=anTar3s&gicOM;trustServerCertificate=true;"
+}
+
+model Profile {
+    id             Int      @id @default(autoincrement()) @map("idProfile")
+    identification String   @unique
+    firstName      String
+    lastName       String
+    email          String?
+    address        String?
+    phone          String?
+    user           User?
+    isActive       Boolean  @default(true)
+    updatedAt      DateTime @default(now()) @updatedAt
+    createAt       DateTime @default(now())
+    groupId        Int?
+
+    @@map("Profiles")
+}
+
+model User {
+    id           Int      @id @default(autoincrement()) @map("idUser")
+    idProfile    Int      @unique
+    profile      Profile  @relation(fields: [idProfile], references: [id])
+    username     String   @unique
+    passwordHash String
+    groups       Group[]  @relation("_UserGroups")
+    isActive     Boolean  @default(true)
+    updatedAt    DateTime @default(now()) @updatedAt
+    createAt     DateTime @default(now())
+
+    @@map("Users")
+}
+
+model Group {
+    id          Int          @id @default(autoincrement()) @map("idGroup")
+    code        String       @unique
+    description String       @unique
+    users       User[]       @relation("_UserGroups")
+    permissions Permission[]
+    layoutItems LayoutItem[]
+    isActive    Boolean      @default(true)
+    updatedAt   DateTime     @default(now()) @updatedAt
+    createAt    DateTime     @default(now())
+
+    @@map("Groups")
+}
+
+model Permission {
+    id        Int      @id @default(autoincrement()) @map("idPermission")
+    code      String   @unique
+    groups    Group[]
+    isActive  Boolean  @default(true)
+    updatedAt DateTime @default(now()) @updatedAt
+    createAt  DateTime @default(now())
+
+    groupId Int?
+    @@map("Permissions")
+}
+
+model LayoutItem {
+    idLayoutItem       Int      @id @default(autoincrement())
+    idLayoutItemParent Int
+    name               String   @unique
+    path               String
+    iconName           String
+    groups             Group[]
+    isActive           Boolean  @default(true)
+    updatedAt          DateTime @default(now()) @updatedAt
+    createAt           DateTime @default(now())
+
+    @@map("LayoutItems")
+}
+
+model Provider {
+    idServiceProvider Int      @id @default(autoincrement())
+    name              String   @unique
+    desription        String
+    email             String
+    isActive          Boolean  @default(true)
+    updatedAt         DateTime @default(now()) @updatedAt
+    createAt          DateTime @default(now())
+
+    groupId Int?
+    @@map("Providers")
+}
+
+model ServiceProvider {
+    idServiceProvider Int      @id @default(autoincrement())
+    name              String   @unique
+    iconName          String
+    isActive          Boolean  @default(true)
+    updatedAt         DateTime @default(now()) @updatedAt
+    createAt          DateTime @default(now())
+
+    groupId Int?
+    @@map("ServiceProviders")
+}
